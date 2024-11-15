@@ -39,6 +39,8 @@ import (
 	svcresource "github.com/aws-controllers-k8s/cognitoidentityprovider-controller/pkg/resource"
 	svcsdk "github.com/aws/aws-sdk-go/service/cognitoidentityprovider"
 
+	_ "github.com/aws-controllers-k8s/cognitoidentityprovider-controller/pkg/resource/user_pool"
+
 	"github.com/aws-controllers-k8s/cognitoidentityprovider-controller/pkg/version"
 )
 
