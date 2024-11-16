@@ -4,7 +4,25 @@ ignore:
       - IdentityProvider
       - ResourceServer
       - UserImportJob
-      - UserPool
       - UserPoolClient
       - UserPoolDomain
 model_name: cognito-idp
+
+resources:
+  UserPool:
+    renames:
+      operations:
+        DescribeUserPool:
+          input_fields:
+            UserPoolId: Id
+        UpdateUserPool:
+          input_fields:
+            UserPoolId: Id
+        DeleteUserPool:
+          input_fields:
+            UserPoolId: Id
+        CreateUserPool:
+          input_fields:
+            PoolName: Name
+    tags:
+      ignore: true

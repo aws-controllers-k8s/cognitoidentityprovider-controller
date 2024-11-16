@@ -1,0 +1,9 @@
+apiVersion: cognitoidentityprovider.services.k8s.aws/v1alpha1
+kind: UserPool
+metadata:
+  name: $USERPOOL_NAME
+spec:
+  name: $USERPOOL_NAME
+  deletionProtection: ACTIVE
+  
+

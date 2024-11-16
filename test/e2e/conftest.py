@@ -42,4 +42,4 @@ def k8s_client():
 
 @pytest.fixture(scope='module')
 def cognitoidentityprovider_client():
-    return boto3.client('cognitoidentityprovider')
+    return boto3.client('cognito-idp')

@@ -9,6 +9,7 @@ rules:
 - apiGroups:
   - cognitoidentityprovider.services.k8s.aws
   resources:
+  - userpools
   verbs:
   - get
   - list
