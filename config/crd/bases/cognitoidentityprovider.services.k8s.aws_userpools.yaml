@@ -41,13 +41,13 @@ spec:
             properties:
               accountRecoverySetting:
                 description: |-
-                  The available verified method a user can use to recover their password when
-                  they call ForgotPassword. You can use this setting to define a preferred
-                  method when a user has more than one method available. With this setting,
-                  SMS doesn't qualify for a valid password recovery mechanism if the user also
-                  has SMS multi-factor authentication (MFA) activated. In the absence of this
-                  setting, Amazon Cognito uses the legacy behavior to determine the recovery
-                  method where SMS is preferred through email.
+                  The settings for user message delivery in forgot-password operations. Contains
+                  preference for email or SMS message delivery of password reset codes, or
+                  for admin-only password reset.
+
+                  This data type is a request and response parameter of CreateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html)
+                  and UpdateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html),
+                  and a response parameter of DescribeUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPool.html).
                 properties:
                   recoveryMechanisms:
                     items:
@@ -75,7 +75,14 @@ spec:
                     type: array
                 type: object
               adminCreateUserConfig:
-                description: The configuration for AdminCreateUser requests.
+                description: |-
+                  The settings for administrator creation of users in a user pool. Contains
+                  settings for allowing user sign-up, customizing invitation messages to new
+                  users, and the amount of time before temporary passwords expire.
+
+                  This data type is a request and response parameter of CreateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html)
+                  and UpdateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html),
+                  and a response parameter of DescribeUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPool.html).
                 properties:
                   allowAdminCreateUserOnly:
                     type: boolean
@@ -94,36 +101,40 @@ spec:
                     type: integer
                 type: object
               aliasAttributes:
-                description: |-
-                  Attributes supported as an alias for this user pool. Possible values: phone_number,
-                  email, or preferred_username.
                 items:
                   type: string
                 type: array
               autoVerifiedAttributes:
-                description: 'The attributes to be auto-verified. Possible values:
-                  email, phone_number.'
                 items:
                   type: string
                 type: array
               deletionProtection:
-                description: |-
-                  When active, DeletionProtection prevents accidental deletion of your userpool.
-                  Before you can delete a user pool that you have protected against deletion,
-                  youmust deactivate this feature.
-
-                  When you try to delete a protected user pool in a DeleteUserPool API request,
-                  Amazon Cognito returns an InvalidParameterException error. To delete a protected
-                  user pool, send a new DeleteUserPool request after you deactivate deletion
-                  protection in an UpdateUserPool API request.
                 type: string
               deviceConfiguration:
                 description: |-
-                  The device-remembering configuration for a user pool. A null value indicates
-                  that you have deactivated device remembering in your user pool.
+                  The device-remembering configuration for a user pool. A DescribeUserPool
+                  (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPool.html)
+                  request returns a null value for this object when the user pool isn't configured
+                  to remember devices. When device remembering is active, you can remember
+                  a user's device with a ConfirmDevice (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_ConfirmDevice.html)
+                  API request. Additionally. when the property DeviceOnlyRememberedOnUserPrompt
+                  is true, you must follow ConfirmDevice with an UpdateDeviceStatus (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateDeviceStatus.html)
+                  API request that sets the user's device to remembered or not_remembered.
 
-                  When you provide a value for any DeviceConfiguration field, you activate
-                  the Amazon Cognito device-remembering feature.
+                  To sign in with a remembered device, include DEVICE_KEY in the authentication
+                  parameters in your user's InitiateAuth (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_InitiateAuth.html)
+                  request. If your app doesn't include a DEVICE_KEY parameter, the response
+                  (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_InitiateAuth.html#API_InitiateAuth_ResponseSyntax)
+                  from Amazon Cognito includes newly-generated DEVICE_KEY and DEVICE_GROUP_KEY
+                  values under NewDeviceMetadata. Store these values to use in future device-authentication
+                  requests.
+
+                  When you provide a value for any property of DeviceConfiguration, you activate
+                  the device remembering for the user pool.
+
+                  This data type is a request and response parameter of CreateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html)
+                  and UpdateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html),
+                  and a response parameter of DescribeUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPool.html).
                 properties:
                   challengeRequiredOnNewDevice:
                     type: boolean
@@ -135,6 +146,18 @@ spec:
                   The email configuration of your user pool. The email configuration type sets
                   your preferred sending method, Amazon Web Services Region, and sender for
                   messages from your user pool.
+
+                  Amazon Cognito can send email messages with Amazon Simple Email Service resources
+                  in the Amazon Web Services Region where you created your user pool, and in
+                  alternate Regions in some cases. For more information on the supported Regions,
+                  see Email settings for Amazon Cognito user pools (https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-email.html).
+
+                  This data type is a request parameter of CreateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html),
+                  UpdateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html),
+                  and SetUserPoolMfaConfig (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_SetUserPoolMfaConfig.html),
+                  and a response parameter of CreateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html),
+                  UpdateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html),
+                  and GetUserPoolMfaConfig (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_GetUserPoolMfaConfig.html).
                 properties:
                   configurationSet:
                     type: string
@@ -148,18 +171,18 @@ spec:
                     type: string
                 type: object
               emailVerificationMessage:
-                description: This parameter is no longer used. See VerificationMessageTemplateType
-                  (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_VerificationMessageTemplateType.html).
                 type: string
               emailVerificationSubject:
-                description: This parameter is no longer used. See VerificationMessageTemplateType
-                  (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_VerificationMessageTemplateType.html).
                 type: string
               lambdaConfig:
                 description: |-
                   A collection of user pool Lambda triggers. Amazon Cognito invokes triggers
-                  at several possible stages of authentication operations. Triggers can modify
-                  the outcome of the operations that invoked them.
+                  at several possible stages of user pool operations. Triggers can modify the
+                  outcome of the operations that invoked them.
+
+                  This data type is a request and response parameter of CreateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html)
+                  and UpdateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html),
+                  and a response parameter of DescribeUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPool.html).
                 properties:
                   createAuthChallenge:
                     type: string
@@ -224,13 +247,17 @@ spec:
                     type: string
                 type: object
               mfaConfiguration:
-                description: Specifies MFA configuration details.
                 type: string
               name:
-                description: A string used to name the user pool.
                 type: string
               policies:
-                description: The policies associated with the new user pool.
+                description: |-
+                  A list of user pool policies. Contains the policy that sets password-complexity
+                  requirements.
+
+                  This data type is a request and response parameter of CreateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html)
+                  and UpdateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html),
+                  and a response parameter of DescribeUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPool.html).
                 properties:
                   passwordPolicy:
                     description: |-
@@ -258,9 +285,6 @@ spec:
                     type: object
                 type: object
               schema:
-                description: |-
-                  An array of schema attributes for the new user pool. These attributes can
-                  be standard or custom attributes.
                 items:
                   description: |-
                     A list of the user attributes and their properties in your user pool. The
@@ -324,16 +348,20 @@ spec:
                   type: object
                 type: array
               smsAuthenticationMessage:
-                description: A string representing the SMS authentication message.
                 type: string
               smsConfiguration:
                 description: |-
-                  The SMS configuration with the settings that your Amazon Cognito user pool
-                  must use to send an SMS message from your Amazon Web Services account through
-                  Amazon Simple Notification Service. To send SMS messages with Amazon SNS
-                  in the Amazon Web Services Region that you want, the Amazon Cognito user
-                  pool uses an Identity and Access Management (IAM) role in your Amazon Web
-                  Services account.
+                  User pool configuration for delivery of SMS messages with Amazon Simple Notification
+                  Service. To send SMS messages with Amazon SNS in the Amazon Web Services
+                  Region that you want, the Amazon Cognito user pool uses an Identity and Access
+                  Management (IAM) role in your Amazon Web Services account.
+
+                  This data type is a request parameter of CreateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html),
+                  UpdateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html),
+                  and SetUserPoolMfaConfig (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_SetUserPoolMfaConfig.html),
+                  and a response parameter of CreateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html),
+                  UpdateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html),
+                  and GetUserPoolMfaConfig (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_GetUserPoolMfaConfig.html).
                 properties:
                   externalID:
                     type: string
@@ -343,13 +371,10 @@ spec:
                     type: string
                 type: object
               smsVerificationMessage:
-                description: This parameter is no longer used. See VerificationMessageTemplateType
-                  (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_VerificationMessageTemplateType.html).
                 type: string
               tags:
                 additionalProperties:
                   type: string
-                description: The tags to assign to the user pool.
                 type: object
               userAttributeUpdateSettings:
                 description: |-
@@ -358,6 +383,10 @@ spec:
                   Amazon Cognito how to handle changes to the value of your users' email address
                   and phone number attributes. Formore information, see Verifying updates to
                   email addresses and phone numbers (https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-email-phone-verification.html#user-pool-settings-verifications-verify-attribute-updates).
+
+                  This data type is a request and response parameter of CreateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html)
+                  and UpdateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html),
+                  and a response parameter of DescribeUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPool.html).
                 properties:
                   attributesRequireVerificationBeforeUpdate:
                     items:
@@ -372,6 +401,10 @@ spec:
                   set to ENFORCED.
 
                   For more information, see Adding advanced security to a user pool (https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-settings-advanced-security.html).
+
+                  This data type is a request and response parameter of CreateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html)
+                  and UpdateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html),
+                  and a response parameter of DescribeUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPool.html).
                 properties:
                   advancedSecurityMode:
                     type: string
@@ -379,31 +412,18 @@ spec:
               userPoolTags:
                 additionalProperties:
                   type: string
-                description: |-
-                  The tag keys and values to assign to the user pool. A tag is a label that
-                  you can use to categorize and manage user pools in different ways, such as
-                  by purpose, owner, environment, or other criteria.
                 type: object
               usernameAttributes:
-                description: |-
-                  Specifies whether a user can use an email address or phone number as a username
-                  when they sign up.
                 items:
                   type: string
                 type: array
               usernameConfiguration:
                 description: |-
-                  Case sensitivity on the username input for the selected sign-in option. When
-                  case sensitivity is set to False (case insensitive), users can sign in with
-                  any combination of capital and lowercase letters. For example, username,
-                  USERNAME, or UserName, or for email, email@example.com or EMaiL@eXamplE.Com.
-                  For most use cases, set case sensitivity to False (case insensitive) as a
-                  best practice. When usernames and email addresses are case insensitive, Amazon
-                  Cognito treats any variation in case as the same user, and prevents a case
-                  variation from being assigned to the same attribute for a different user.
+                  The configuration of a user pool for username case sensitivity.
 
-                  This configuration is immutable after you set it. For more information, see
-                  UsernameConfigurationType (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UsernameConfigurationType.html).
+                  This data type is a request and response parameter of CreateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html)
+                  and UpdateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html),
+                  and a response parameter of DescribeUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPool.html).
                 properties:
                   caseSensitive:
                     type: boolean
@@ -413,11 +433,9 @@ spec:
                   The template for the verification message that your user pool delivers to
                   users who set an email address or phone number attribute.
 
-                  Set the email message type that corresponds to your DefaultEmailOption selection.
-                  For CONFIRM_WITH_LINK, specify an EmailMessageByLink and leave EmailMessage
-                  blank. For CONFIRM_WITH_CODE, specify an EmailMessage and leave EmailMessageByLink
-                  blank. When you supply both parameters with either choice, Amazon Cognito
-                  returns an error.
+                  This data type is a request and response parameter of CreateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html)
+                  and UpdateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html),
+                  and a response parameter of DescribeUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPool.html).
                 properties:
                   defaultEmailOption:
                     type: string
@@ -469,7 +487,7 @@ spec:
                 type: object
               conditions:
                 description: |-
-                  All CRS managed by ACK have a common `Status.Conditions` member that
+                  All CRs managed by ACK have a common `Status.Conditions` member that
                   contains a collection of `ackv1alpha1.Condition` objects that describe
                   the various terminal states of the CR and its backend AWS service API
                   resource
