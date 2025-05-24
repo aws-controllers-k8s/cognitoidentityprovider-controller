@@ -148,12 +148,16 @@ spec:
                     type: string
                 type: object
               emailVerificationMessage:
-                description: This parameter is no longer used. See VerificationMessageTemplateType
-                  (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_VerificationMessageTemplateType.html).
+                description: |-
+                  This parameter is no longer used. See VerificationMessageTemplateType (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_VerificationMessageTemplateType.html).
+
+                  Regex Pattern: `^[\p{L}\p{M}\p{S}\p{N}\p{P}\s*]*\{####\}[\p{L}\p{M}\p{S}\p{N}\p{P}\s*]*$`
                 type: string
               emailVerificationSubject:
-                description: This parameter is no longer used. See VerificationMessageTemplateType
-                  (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_VerificationMessageTemplateType.html).
+                description: |-
+                  This parameter is no longer used. See VerificationMessageTemplateType (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_VerificationMessageTemplateType.html).
+
+                  Regex Pattern: `^[\p{L}\p{M}\p{S}\p{N}\p{P}\s]+$`
                 type: string
               lambdaConfig:
                 description: |-
@@ -227,7 +231,10 @@ spec:
                 description: Specifies MFA configuration details.
                 type: string
               name:
-                description: A string used to name the user pool.
+                description: |-
+                  A string used to name the user pool.
+
+                  Regex Pattern: `^[\w\s+=,.@-]+$`
                 type: string
               policies:
                 description: The policies associated with the new user pool.
@@ -324,7 +331,10 @@ spec:
                   type: object
                 type: array
               smsAuthenticationMessage:
-                description: A string representing the SMS authentication message.
+                description: |-
+                  A string representing the SMS authentication message.
+
+                  Regex Pattern: `\{####\}`
                 type: string
               smsConfiguration:
                 description: |-
@@ -343,8 +353,10 @@ spec:
                     type: string
                 type: object
               smsVerificationMessage:
-                description: This parameter is no longer used. See VerificationMessageTemplateType
-                  (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_VerificationMessageTemplateType.html).
+                description: |-
+                  This parameter is no longer used. See VerificationMessageTemplateType (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_VerificationMessageTemplateType.html).
+
+                  Regex Pattern: `\{####\}`
                 type: string
               tags:
                 additionalProperties:
@@ -517,10 +529,14 @@ spec:
 
                   For more information about adding a custom domain to your user pool, see
                   Using Your Own Domain for the Hosted UI (https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-add-custom-domain.html).
+
+                  Regex Pattern: `^[a-z0-9](?:[a-z0-9\-]{0,61}[a-z0-9])?$`
                 type: string
               domain:
-                description: The domain prefix, if the user pool has a domain associated
-                  with it.
+                description: |-
+                  The domain prefix, if the user pool has a domain associated with it.
+
+                  Regex Pattern: `^[a-z0-9](?:[a-z0-9\-]{0,61}[a-z0-9])?$`
                 type: string
               emailConfigurationFailure:
                 description: |-
@@ -532,7 +548,10 @@ spec:
                 format: int64
                 type: integer
               id:
-                description: The ID of the user pool.
+                description: |-
+                  The ID of the user pool.
+
+                  Regex Pattern: `^[\w-]+_[0-9a-zA-Z]+$`
                 type: string
               lastModifiedDate:
                 description: |-
