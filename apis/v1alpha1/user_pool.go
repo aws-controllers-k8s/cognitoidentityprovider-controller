@@ -58,8 +58,12 @@ type UserPoolSpec struct {
 	// messages from your user pool.
 	EmailConfiguration *EmailConfigurationType `json:"emailConfiguration,omitempty"`
 	// This parameter is no longer used. See VerificationMessageTemplateType (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_VerificationMessageTemplateType.html).
+	//
+	// Regex Pattern: `^[\p{L}\p{M}\p{S}\p{N}\p{P}\s*]*\{####\}[\p{L}\p{M}\p{S}\p{N}\p{P}\s*]*$`
 	EmailVerificationMessage *string `json:"emailVerificationMessage,omitempty"`
 	// This parameter is no longer used. See VerificationMessageTemplateType (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_VerificationMessageTemplateType.html).
+	//
+	// Regex Pattern: `^[\p{L}\p{M}\p{S}\p{N}\p{P}\s]+$`
 	EmailVerificationSubject *string `json:"emailVerificationSubject,omitempty"`
 	// A collection of user pool Lambda triggers. Amazon Cognito invokes triggers
 	// at several possible stages of authentication operations. Triggers can modify
@@ -68,6 +72,8 @@ type UserPoolSpec struct {
 	// Specifies MFA configuration details.
 	MFAConfiguration *string `json:"mfaConfiguration,omitempty"`
 	// A string used to name the user pool.
+	//
+	// Regex Pattern: `^[\w\s+=,.@-]+$`
 	// +kubebuilder:validation:Required
 	Name *string `json:"name"`
 	// The policies associated with the new user pool.
@@ -76,6 +82,8 @@ type UserPoolSpec struct {
 	// be standard or custom attributes.
 	Schema []*SchemaAttributeType `json:"schema,omitempty"`
 	// A string representing the SMS authentication message.
+	//
+	// Regex Pattern: `\{####\}`
 	SmsAuthenticationMessage *string `json:"smsAuthenticationMessage,omitempty"`
 	// The SMS configuration with the settings that your Amazon Cognito user pool
 	// must use to send an SMS message from your Amazon Web Services account through
@@ -85,6 +93,8 @@ type UserPoolSpec struct {
 	// Services account.
 	SmsConfiguration *SmsConfigurationType `json:"smsConfiguration,omitempty"`
 	// This parameter is no longer used. See VerificationMessageTemplateType (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_VerificationMessageTemplateType.html).
+	//
+	// Regex Pattern: `\{####\}`
 	SmsVerificationMessage *string `json:"smsVerificationMessage,omitempty"`
 	// The tags to assign to the user pool.
 	Tags map[string]*string `json:"tags,omitempty"`
@@ -155,9 +165,13 @@ type UserPoolStatus struct {
 	//
 	// For more information about adding a custom domain to your user pool, see
 	// Using Your Own Domain for the Hosted UI (https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-add-custom-domain.html).
+	//
+	// Regex Pattern: `^[a-z0-9](?:[a-z0-9\-]{0,61}[a-z0-9])?$`
 	// +kubebuilder:validation:Optional
 	CustomDomain *string `json:"customDomain,omitempty"`
 	// The domain prefix, if the user pool has a domain associated with it.
+	//
+	// Regex Pattern: `^[a-z0-9](?:[a-z0-9\-]{0,61}[a-z0-9])?$`
 	// +kubebuilder:validation:Optional
 	Domain *string `json:"domain,omitempty"`
 	// Deprecated. Review error codes from API requests with EventSource:cognito-idp.amazonaws.com
@@ -168,6 +182,8 @@ type UserPoolStatus struct {
 	// +kubebuilder:validation:Optional
 	EstimatedNumberOfUsers *int64 `json:"estimatedNumberOfUsers,omitempty"`
 	// The ID of the user pool.
+	//
+	// Regex Pattern: `^[\w-]+_[0-9a-zA-Z]+$`
 	// +kubebuilder:validation:Optional
 	ID *string `json:"id,omitempty"`
 	// The date and time when the item was modified. Amazon Cognito returns this
