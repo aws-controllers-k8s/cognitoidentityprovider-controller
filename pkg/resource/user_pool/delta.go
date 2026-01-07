@@ -17,16 +17,15 @@ package user_pool
 
 import (
 	"bytes"
-	"reflect"
 
 	ackcompare "github.com/aws-controllers-k8s/runtime/pkg/compare"
 	acktags "github.com/aws-controllers-k8s/runtime/pkg/tags"
+	"k8s.io/apimachinery/pkg/api/equality"
 )
 
 // Hack to avoid import errors during build...
 var (
 	_ = &bytes.Buffer{}
-	_ = &reflect.Method{}
 	_ = &acktags.Tags{}
 )
 
@@ -49,7 +48,7 @@ func newResourceDelta(
 		if len(a.ko.Spec.AccountRecoverySetting.RecoveryMechanisms) != len(b.ko.Spec.AccountRecoverySetting.RecoveryMechanisms) {
 			delta.Add("Spec.AccountRecoverySetting.RecoveryMechanisms", a.ko.Spec.AccountRecoverySetting.RecoveryMechanisms, b.ko.Spec.AccountRecoverySetting.RecoveryMechanisms)
 		} else if len(a.ko.Spec.AccountRecoverySetting.RecoveryMechanisms) > 0 {
-			if !reflect.DeepEqual(a.ko.Spec.AccountRecoverySetting.RecoveryMechanisms, b.ko.Spec.AccountRecoverySetting.RecoveryMechanisms) {
+			if !equality.Semantic.Equalities.DeepEqual(a.ko.Spec.AccountRecoverySetting.RecoveryMechanisms, b.ko.Spec.AccountRecoverySetting.RecoveryMechanisms) {
 				delta.Add("Spec.AccountRecoverySetting.RecoveryMechanisms", a.ko.Spec.AccountRecoverySetting.RecoveryMechanisms, b.ko.Spec.AccountRecoverySetting.RecoveryMechanisms)
 			}
 		}
@@ -391,7 +390,7 @@ func newResourceDelta(
 	if len(a.ko.Spec.Schema) != len(b.ko.Spec.Schema) {
 		delta.Add("Spec.Schema", a.ko.Spec.Schema, b.ko.Spec.Schema)
 	} else if len(a.ko.Spec.Schema) > 0 {
-		if !reflect.DeepEqual(a.ko.Spec.Schema, b.ko.Spec.Schema) {
+		if !equality.Semantic.Equalities.DeepEqual(a.ko.Spec.Schema, b.ko.Spec.Schema) {
 			delta.Add("Spec.Schema", a.ko.Spec.Schema, b.ko.Spec.Schema)
 		}
 	}
