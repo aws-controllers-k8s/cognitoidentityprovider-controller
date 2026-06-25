@@ -41,6 +41,81 @@ resources:
         from:
           operation: TagResource
           path: Tags
+      LambdaConfig.CreateAuthChallenge:
+        references:
+          resource: Function
+          service_name: lambda
+          path: Status.ACKResourceMetadata.ARN
+      LambdaConfig.CustomMessage:
+        references:
+          resource: Function
+          service_name: lambda
+          path: Status.ACKResourceMetadata.ARN
+      LambdaConfig.DefineAuthChallenge:
+        references:
+          resource: Function
+          service_name: lambda
+          path: Status.ACKResourceMetadata.ARN
+      LambdaConfig.PostAuthentication:
+        references:
+          resource: Function
+          service_name: lambda
+          path: Status.ACKResourceMetadata.ARN
+      LambdaConfig.PostConfirmation:
+        references:
+          resource: Function
+          service_name: lambda
+          path: Status.ACKResourceMetadata.ARN
+      LambdaConfig.PreAuthentication:
+        references:
+          resource: Function
+          service_name: lambda
+          path: Status.ACKResourceMetadata.ARN
+      LambdaConfig.PreSignUp:
+        references:
+          resource: Function
+          service_name: lambda
+          path: Status.ACKResourceMetadata.ARN
+      LambdaConfig.PreTokenGeneration:
+        references:
+          resource: Function
+          service_name: lambda
+          path: Status.ACKResourceMetadata.ARN
+      LambdaConfig.UserMigration:
+        references:
+          resource: Function
+          service_name: lambda
+          path: Status.ACKResourceMetadata.ARN
+      LambdaConfig.VerifyAuthChallengeResponse:
+        references:
+          resource: Function
+          service_name: lambda
+          path: Status.ACKResourceMetadata.ARN
+      LambdaConfig.CustomEmailSender.LambdaARN:
+        references:
+          resource: Function
+          service_name: lambda
+          path: Status.ACKResourceMetadata.ARN
+      LambdaConfig.CustomSMSSender.LambdaARN:
+        references:
+          resource: Function
+          service_name: lambda
+          path: Status.ACKResourceMetadata.ARN
+      LambdaConfig.PreTokenGenerationConfig.LambdaARN:
+        references:
+          resource: Function
+          service_name: lambda
+          path: Status.ACKResourceMetadata.ARN
+      LambdaConfig.KMSKeyID:
+        references:
+          resource: Key
+          service_name: kms
+          path: Status.ACKResourceMetadata.ARN
+      SmsConfiguration.SNSCallerARN:
+        references:
+          resource: Role
+          service_name: iam
+          path: Status.ACKResourceMetadata.ARN
     hooks:
       sdk_create_post_set_output:
         template_path: hooks/user_pool/sdk_create_post_set_output.go.tpl

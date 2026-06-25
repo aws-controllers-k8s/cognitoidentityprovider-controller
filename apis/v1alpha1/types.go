@@ -160,8 +160,10 @@ type CustomDomainConfigType struct {
 // and UpdateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html),
 // and a response parameter of DescribeUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPool.html).
 type CustomEmailLambdaVersionConfigType struct {
-	LambdaARN     *string `json:"lambdaARN,omitempty"`
-	LambdaVersion *string `json:"lambdaVersion,omitempty"`
+	LambdaARN *string `json:"lambdaARN,omitempty"`
+	// Reference field for LambdaARN
+	LambdaRef     *ackv1alpha1.AWSResourceReferenceWrapper `json:"lambdaRef,omitempty"`
+	LambdaVersion *string                                  `json:"lambdaVersion,omitempty"`
 }
 
 // The properties of a custom SMS sender Lambda trigger.
@@ -170,8 +172,10 @@ type CustomEmailLambdaVersionConfigType struct {
 // and UpdateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html),
 // and a response parameter of DescribeUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPool.html).
 type CustomSMSLambdaVersionConfigType struct {
-	LambdaARN     *string `json:"lambdaARN,omitempty"`
-	LambdaVersion *string `json:"lambdaVersion,omitempty"`
+	LambdaARN *string `json:"lambdaARN,omitempty"`
+	// Reference field for LambdaARN
+	LambdaRef     *ackv1alpha1.AWSResourceReferenceWrapper `json:"lambdaRef,omitempty"`
+	LambdaVersion *string                                  `json:"lambdaVersion,omitempty"`
 }
 
 // The device-remembering configuration for a user pool. A DescribeUserPool
@@ -355,6 +359,8 @@ type IdentityProviderType struct {
 // and a response parameter of DescribeUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPool.html).
 type LambdaConfigType struct {
 	CreateAuthChallenge *string `json:"createAuthChallenge,omitempty"`
+	// Reference field for CreateAuthChallenge
+	CreateAuthChallengeRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"createAuthChallengeRef,omitempty"`
 	// The properties of a custom email sender Lambda trigger.
 	//
 	// This data type is a request and response parameter of CreateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html)
@@ -362,6 +368,8 @@ type LambdaConfigType struct {
 	// and a response parameter of DescribeUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPool.html).
 	CustomEmailSender *CustomEmailLambdaVersionConfigType `json:"customEmailSender,omitempty"`
 	CustomMessage     *string                             `json:"customMessage,omitempty"`
+	// Reference field for CustomMessage
+	CustomMessageRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"customMessageRef,omitempty"`
 	// The properties of a custom SMS sender Lambda trigger.
 	//
 	// This data type is a request and response parameter of CreateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html)
@@ -369,20 +377,38 @@ type LambdaConfigType struct {
 	// and a response parameter of DescribeUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPool.html).
 	CustomSMSSender     *CustomSMSLambdaVersionConfigType `json:"customSMSSender,omitempty"`
 	DefineAuthChallenge *string                           `json:"defineAuthChallenge,omitempty"`
-	KMSKeyID            *string                           `json:"kmsKeyID,omitempty"`
-	PostAuthentication  *string                           `json:"postAuthentication,omitempty"`
-	PostConfirmation    *string                           `json:"postConfirmation,omitempty"`
-	PreAuthentication   *string                           `json:"preAuthentication,omitempty"`
-	PreSignUp           *string                           `json:"preSignUp,omitempty"`
-	PreTokenGeneration  *string                           `json:"preTokenGeneration,omitempty"`
+	// Reference field for DefineAuthChallenge
+	DefineAuthChallengeRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"defineAuthChallengeRef,omitempty"`
+	KMSKeyID               *string                                  `json:"kmsKeyID,omitempty"`
+	// Reference field for KMSKeyID
+	KMSKeyRef          *ackv1alpha1.AWSResourceReferenceWrapper `json:"kmsKeyRef,omitempty"`
+	PostAuthentication *string                                  `json:"postAuthentication,omitempty"`
+	// Reference field for PostAuthentication
+	PostAuthenticationRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"postAuthenticationRef,omitempty"`
+	PostConfirmation      *string                                  `json:"postConfirmation,omitempty"`
+	// Reference field for PostConfirmation
+	PostConfirmationRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"postConfirmationRef,omitempty"`
+	PreAuthentication   *string                                  `json:"preAuthentication,omitempty"`
+	// Reference field for PreAuthentication
+	PreAuthenticationRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"preAuthenticationRef,omitempty"`
+	PreSignUp            *string                                  `json:"preSignUp,omitempty"`
+	// Reference field for PreSignUp
+	PreSignUpRef       *ackv1alpha1.AWSResourceReferenceWrapper `json:"preSignUpRef,omitempty"`
+	PreTokenGeneration *string                                  `json:"preTokenGeneration,omitempty"`
 	// The properties of a pre token generation Lambda trigger.
 	//
 	// This data type is a request and response parameter of CreateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html)
 	// and UpdateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html),
 	// and a response parameter of DescribeUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPool.html).
-	PreTokenGenerationConfig    *PreTokenGenerationVersionConfigType `json:"preTokenGenerationConfig,omitempty"`
-	UserMigration               *string                              `json:"userMigration,omitempty"`
-	VerifyAuthChallengeResponse *string                              `json:"verifyAuthChallengeResponse,omitempty"`
+	PreTokenGenerationConfig *PreTokenGenerationVersionConfigType `json:"preTokenGenerationConfig,omitempty"`
+	// Reference field for PreTokenGeneration
+	PreTokenGenerationRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"preTokenGenerationRef,omitempty"`
+	UserMigration         *string                                  `json:"userMigration,omitempty"`
+	// Reference field for UserMigration
+	UserMigrationRef            *ackv1alpha1.AWSResourceReferenceWrapper `json:"userMigrationRef,omitempty"`
+	VerifyAuthChallengeResponse *string                                  `json:"verifyAuthChallengeResponse,omitempty"`
+	// Reference field for VerifyAuthChallengeResponse
+	VerifyAuthChallengeResponseRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"verifyAuthChallengeResponseRef,omitempty"`
 }
 
 // The logging parameters of a user pool, as returned in the response to a GetLogDeliveryConfiguration
@@ -474,8 +500,10 @@ type PasswordPolicyType struct {
 // and UpdateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html),
 // and a response parameter of DescribeUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPool.html).
 type PreTokenGenerationVersionConfigType struct {
-	LambdaARN     *string `json:"lambdaARN,omitempty"`
-	LambdaVersion *string `json:"lambdaVersion,omitempty"`
+	LambdaARN *string `json:"lambdaARN,omitempty"`
+	// Reference field for LambdaARN
+	LambdaRef     *ackv1alpha1.AWSResourceReferenceWrapper `json:"lambdaRef,omitempty"`
+	LambdaVersion *string                                  `json:"lambdaVersion,omitempty"`
 }
 
 // The details of a user pool identity provider (IdP), including name and type.
@@ -600,7 +628,9 @@ type SchemaAttributeType struct {
 type SmsConfigurationType struct {
 	ExternalID   *string `json:"externalID,omitempty"`
 	SNSCallerARN *string `json:"snsCallerARN,omitempty"`
-	SNSRegion    *string `json:"snsRegion,omitempty"`
+	// Reference field for SNSCallerARN
+	SNSCallerRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"snsCallerRef,omitempty"`
+	SNSRegion    *string                                  `json:"snsRegion,omitempty"`
 }
 
 // The configuration of multi-factor authentication (MFA) with SMS messages

@@ -17,13 +17,67 @@ package user_pool
 
 import (
 	"context"
+	"fmt"
 
+	corev1 "k8s.io/api/core/v1"
+	"k8s.io/apimachinery/pkg/types"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
+	iamapitypes "github.com/aws-controllers-k8s/iam-controller/apis/v1alpha1"
+	kmsapitypes "github.com/aws-controllers-k8s/kms-controller/apis/v1alpha1"
+	lambdaapitypes "github.com/aws-controllers-k8s/lambda-controller/apis/v1alpha1"
+	ackv1alpha1 "github.com/aws-controllers-k8s/runtime/apis/core/v1alpha1"
+	ackerr "github.com/aws-controllers-k8s/runtime/pkg/errors"
+	ackrt "github.com/aws-controllers-k8s/runtime/pkg/runtime"
 	acktypes "github.com/aws-controllers-k8s/runtime/pkg/types"
 
 	svcapitypes "github.com/aws-controllers-k8s/cognitoidentityprovider-controller/apis/v1alpha1"
 )
+
+// +kubebuilder:rbac:groups=lambda.services.k8s.aws,resources=functions,verbs=get;list
+// +kubebuilder:rbac:groups=lambda.services.k8s.aws,resources=functions/status,verbs=get;list
+
+// +kubebuilder:rbac:groups=lambda.services.k8s.aws,resources=functions,verbs=get;list
+// +kubebuilder:rbac:groups=lambda.services.k8s.aws,resources=functions/status,verbs=get;list
+
+// +kubebuilder:rbac:groups=lambda.services.k8s.aws,resources=functions,verbs=get;list
+// +kubebuilder:rbac:groups=lambda.services.k8s.aws,resources=functions/status,verbs=get;list
+
+// +kubebuilder:rbac:groups=lambda.services.k8s.aws,resources=functions,verbs=get;list
+// +kubebuilder:rbac:groups=lambda.services.k8s.aws,resources=functions/status,verbs=get;list
+
+// +kubebuilder:rbac:groups=lambda.services.k8s.aws,resources=functions,verbs=get;list
+// +kubebuilder:rbac:groups=lambda.services.k8s.aws,resources=functions/status,verbs=get;list
+
+// +kubebuilder:rbac:groups=kms.services.k8s.aws,resources=keys,verbs=get;list
+// +kubebuilder:rbac:groups=kms.services.k8s.aws,resources=keys/status,verbs=get;list
+
+// +kubebuilder:rbac:groups=lambda.services.k8s.aws,resources=functions,verbs=get;list
+// +kubebuilder:rbac:groups=lambda.services.k8s.aws,resources=functions/status,verbs=get;list
+
+// +kubebuilder:rbac:groups=lambda.services.k8s.aws,resources=functions,verbs=get;list
+// +kubebuilder:rbac:groups=lambda.services.k8s.aws,resources=functions/status,verbs=get;list
+
+// +kubebuilder:rbac:groups=lambda.services.k8s.aws,resources=functions,verbs=get;list
+// +kubebuilder:rbac:groups=lambda.services.k8s.aws,resources=functions/status,verbs=get;list
+
+// +kubebuilder:rbac:groups=lambda.services.k8s.aws,resources=functions,verbs=get;list
+// +kubebuilder:rbac:groups=lambda.services.k8s.aws,resources=functions/status,verbs=get;list
+
+// +kubebuilder:rbac:groups=lambda.services.k8s.aws,resources=functions,verbs=get;list
+// +kubebuilder:rbac:groups=lambda.services.k8s.aws,resources=functions/status,verbs=get;list
+
+// +kubebuilder:rbac:groups=lambda.services.k8s.aws,resources=functions,verbs=get;list
+// +kubebuilder:rbac:groups=lambda.services.k8s.aws,resources=functions/status,verbs=get;list
+
+// +kubebuilder:rbac:groups=lambda.services.k8s.aws,resources=functions,verbs=get;list
+// +kubebuilder:rbac:groups=lambda.services.k8s.aws,resources=functions/status,verbs=get;list
+
+// +kubebuilder:rbac:groups=lambda.services.k8s.aws,resources=functions,verbs=get;list
+// +kubebuilder:rbac:groups=lambda.services.k8s.aws,resources=functions/status,verbs=get;list
+
+// +kubebuilder:rbac:groups=iam.services.k8s.aws,resources=roles,verbs=get;list
+// +kubebuilder:rbac:groups=iam.services.k8s.aws,resources=roles/status,verbs=get;list
 
 // ClearResolvedReferences removes any reference values that were made
 // concrete in the spec. It returns a copy of the input AWSResource which
@@ -31,6 +85,102 @@ import (
 // values.
 func (rm *resourceManager) ClearResolvedReferences(res acktypes.AWSResource) acktypes.AWSResource {
 	ko := rm.concreteResource(res).ko.DeepCopy()
+
+	if ko.Spec.LambdaConfig != nil {
+		if ko.Spec.LambdaConfig.CreateAuthChallengeRef != nil {
+			ko.Spec.LambdaConfig.CreateAuthChallenge = nil
+		}
+	}
+
+	if ko.Spec.LambdaConfig != nil {
+		if ko.Spec.LambdaConfig.CustomEmailSender != nil {
+			if ko.Spec.LambdaConfig.CustomEmailSender.LambdaRef != nil {
+				ko.Spec.LambdaConfig.CustomEmailSender.LambdaARN = nil
+			}
+		}
+	}
+
+	if ko.Spec.LambdaConfig != nil {
+		if ko.Spec.LambdaConfig.CustomMessageRef != nil {
+			ko.Spec.LambdaConfig.CustomMessage = nil
+		}
+	}
+
+	if ko.Spec.LambdaConfig != nil {
+		if ko.Spec.LambdaConfig.CustomSMSSender != nil {
+			if ko.Spec.LambdaConfig.CustomSMSSender.LambdaRef != nil {
+				ko.Spec.LambdaConfig.CustomSMSSender.LambdaARN = nil
+			}
+		}
+	}
+
+	if ko.Spec.LambdaConfig != nil {
+		if ko.Spec.LambdaConfig.DefineAuthChallengeRef != nil {
+			ko.Spec.LambdaConfig.DefineAuthChallenge = nil
+		}
+	}
+
+	if ko.Spec.LambdaConfig != nil {
+		if ko.Spec.LambdaConfig.KMSKeyRef != nil {
+			ko.Spec.LambdaConfig.KMSKeyID = nil
+		}
+	}
+
+	if ko.Spec.LambdaConfig != nil {
+		if ko.Spec.LambdaConfig.PostAuthenticationRef != nil {
+			ko.Spec.LambdaConfig.PostAuthentication = nil
+		}
+	}
+
+	if ko.Spec.LambdaConfig != nil {
+		if ko.Spec.LambdaConfig.PostConfirmationRef != nil {
+			ko.Spec.LambdaConfig.PostConfirmation = nil
+		}
+	}
+
+	if ko.Spec.LambdaConfig != nil {
+		if ko.Spec.LambdaConfig.PreAuthenticationRef != nil {
+			ko.Spec.LambdaConfig.PreAuthentication = nil
+		}
+	}
+
+	if ko.Spec.LambdaConfig != nil {
+		if ko.Spec.LambdaConfig.PreSignUpRef != nil {
+			ko.Spec.LambdaConfig.PreSignUp = nil
+		}
+	}
+
+	if ko.Spec.LambdaConfig != nil {
+		if ko.Spec.LambdaConfig.PreTokenGenerationRef != nil {
+			ko.Spec.LambdaConfig.PreTokenGeneration = nil
+		}
+	}
+
+	if ko.Spec.LambdaConfig != nil {
+		if ko.Spec.LambdaConfig.PreTokenGenerationConfig != nil {
+			if ko.Spec.LambdaConfig.PreTokenGenerationConfig.LambdaRef != nil {
+				ko.Spec.LambdaConfig.PreTokenGenerationConfig.LambdaARN = nil
+			}
+		}
+	}
+
+	if ko.Spec.LambdaConfig != nil {
+		if ko.Spec.LambdaConfig.UserMigrationRef != nil {
+			ko.Spec.LambdaConfig.UserMigration = nil
+		}
+	}
+
+	if ko.Spec.LambdaConfig != nil {
+		if ko.Spec.LambdaConfig.VerifyAuthChallengeResponseRef != nil {
+			ko.Spec.LambdaConfig.VerifyAuthChallengeResponse = nil
+		}
+	}
+
+	if ko.Spec.SmsConfiguration != nil {
+		if ko.Spec.SmsConfiguration.SNSCallerRef != nil {
+			ko.Spec.SmsConfiguration.SNSCallerARN = nil
+		}
+	}
 
 	return &resource{ko}
 }
@@ -47,11 +197,954 @@ func (rm *resourceManager) ResolveReferences(
 	apiReader client.Reader,
 	res acktypes.AWSResource,
 ) (acktypes.AWSResource, bool, error) {
-	return res, false, nil
+	ko := rm.concreteResource(res).ko
+
+	resourceHasReferences := false
+	err := validateReferenceFields(ko)
+	if fieldHasReferences, err := rm.resolveReferenceForLambdaConfig_CreateAuthChallenge(ctx, apiReader, ko); err != nil {
+		return &resource{ko}, (resourceHasReferences || fieldHasReferences), err
+	} else {
+		resourceHasReferences = resourceHasReferences || fieldHasReferences
+	}
+
+	if fieldHasReferences, err := rm.resolveReferenceForLambdaConfig_CustomEmailSender_LambdaARN(ctx, apiReader, ko); err != nil {
+		return &resource{ko}, (resourceHasReferences || fieldHasReferences), err
+	} else {
+		resourceHasReferences = resourceHasReferences || fieldHasReferences
+	}
+
+	if fieldHasReferences, err := rm.resolveReferenceForLambdaConfig_CustomMessage(ctx, apiReader, ko); err != nil {
+		return &resource{ko}, (resourceHasReferences || fieldHasReferences), err
+	} else {
+		resourceHasReferences = resourceHasReferences || fieldHasReferences
+	}
+
+	if fieldHasReferences, err := rm.resolveReferenceForLambdaConfig_CustomSMSSender_LambdaARN(ctx, apiReader, ko); err != nil {
+		return &resource{ko}, (resourceHasReferences || fieldHasReferences), err
+	} else {
+		resourceHasReferences = resourceHasReferences || fieldHasReferences
+	}
+
+	if fieldHasReferences, err := rm.resolveReferenceForLambdaConfig_DefineAuthChallenge(ctx, apiReader, ko); err != nil {
+		return &resource{ko}, (resourceHasReferences || fieldHasReferences), err
+	} else {
+		resourceHasReferences = resourceHasReferences || fieldHasReferences
+	}
+
+	if fieldHasReferences, err := rm.resolveReferenceForLambdaConfig_KMSKeyID(ctx, apiReader, ko); err != nil {
+		return &resource{ko}, (resourceHasReferences || fieldHasReferences), err
+	} else {
+		resourceHasReferences = resourceHasReferences || fieldHasReferences
+	}
+
+	if fieldHasReferences, err := rm.resolveReferenceForLambdaConfig_PostAuthentication(ctx, apiReader, ko); err != nil {
+		return &resource{ko}, (resourceHasReferences || fieldHasReferences), err
+	} else {
+		resourceHasReferences = resourceHasReferences || fieldHasReferences
+	}
+
+	if fieldHasReferences, err := rm.resolveReferenceForLambdaConfig_PostConfirmation(ctx, apiReader, ko); err != nil {
+		return &resource{ko}, (resourceHasReferences || fieldHasReferences), err
+	} else {
+		resourceHasReferences = resourceHasReferences || fieldHasReferences
+	}
+
+	if fieldHasReferences, err := rm.resolveReferenceForLambdaConfig_PreAuthentication(ctx, apiReader, ko); err != nil {
+		return &resource{ko}, (resourceHasReferences || fieldHasReferences), err
+	} else {
+		resourceHasReferences = resourceHasReferences || fieldHasReferences
+	}
+
+	if fieldHasReferences, err := rm.resolveReferenceForLambdaConfig_PreSignUp(ctx, apiReader, ko); err != nil {
+		return &resource{ko}, (resourceHasReferences || fieldHasReferences), err
+	} else {
+		resourceHasReferences = resourceHasReferences || fieldHasReferences
+	}
+
+	if fieldHasReferences, err := rm.resolveReferenceForLambdaConfig_PreTokenGeneration(ctx, apiReader, ko); err != nil {
+		return &resource{ko}, (resourceHasReferences || fieldHasReferences), err
+	} else {
+		resourceHasReferences = resourceHasReferences || fieldHasReferences
+	}
+
+	if fieldHasReferences, err := rm.resolveReferenceForLambdaConfig_PreTokenGenerationConfig_LambdaARN(ctx, apiReader, ko); err != nil {
+		return &resource{ko}, (resourceHasReferences || fieldHasReferences), err
+	} else {
+		resourceHasReferences = resourceHasReferences || fieldHasReferences
+	}
+
+	if fieldHasReferences, err := rm.resolveReferenceForLambdaConfig_UserMigration(ctx, apiReader, ko); err != nil {
+		return &resource{ko}, (resourceHasReferences || fieldHasReferences), err
+	} else {
+		resourceHasReferences = resourceHasReferences || fieldHasReferences
+	}
+
+	if fieldHasReferences, err := rm.resolveReferenceForLambdaConfig_VerifyAuthChallengeResponse(ctx, apiReader, ko); err != nil {
+		return &resource{ko}, (resourceHasReferences || fieldHasReferences), err
+	} else {
+		resourceHasReferences = resourceHasReferences || fieldHasReferences
+	}
+
+	if fieldHasReferences, err := rm.resolveReferenceForSmsConfiguration_SNSCallerARN(ctx, apiReader, ko); err != nil {
+		return &resource{ko}, (resourceHasReferences || fieldHasReferences), err
+	} else {
+		resourceHasReferences = resourceHasReferences || fieldHasReferences
+	}
+
+	return &resource{ko}, resourceHasReferences, err
 }
 
 // validateReferenceFields validates the reference field and corresponding
 // identifier field.
 func validateReferenceFields(ko *svcapitypes.UserPool) error {
+
+	if ko.Spec.LambdaConfig != nil {
+		if ko.Spec.LambdaConfig.CreateAuthChallengeRef != nil && ko.Spec.LambdaConfig.CreateAuthChallenge != nil {
+			return ackerr.ResourceReferenceAndIDNotSupportedFor("LambdaConfig.CreateAuthChallenge", "LambdaConfig.CreateAuthChallengeRef")
+		}
+	}
+
+	if ko.Spec.LambdaConfig != nil {
+		if ko.Spec.LambdaConfig.CustomEmailSender != nil {
+			if ko.Spec.LambdaConfig.CustomEmailSender.LambdaRef != nil && ko.Spec.LambdaConfig.CustomEmailSender.LambdaARN != nil {
+				return ackerr.ResourceReferenceAndIDNotSupportedFor("LambdaConfig.CustomEmailSender.LambdaARN", "LambdaConfig.CustomEmailSender.LambdaRef")
+			}
+		}
+	}
+
+	if ko.Spec.LambdaConfig != nil {
+		if ko.Spec.LambdaConfig.CustomMessageRef != nil && ko.Spec.LambdaConfig.CustomMessage != nil {
+			return ackerr.ResourceReferenceAndIDNotSupportedFor("LambdaConfig.CustomMessage", "LambdaConfig.CustomMessageRef")
+		}
+	}
+
+	if ko.Spec.LambdaConfig != nil {
+		if ko.Spec.LambdaConfig.CustomSMSSender != nil {
+			if ko.Spec.LambdaConfig.CustomSMSSender.LambdaRef != nil && ko.Spec.LambdaConfig.CustomSMSSender.LambdaARN != nil {
+				return ackerr.ResourceReferenceAndIDNotSupportedFor("LambdaConfig.CustomSMSSender.LambdaARN", "LambdaConfig.CustomSMSSender.LambdaRef")
+			}
+		}
+	}
+
+	if ko.Spec.LambdaConfig != nil {
+		if ko.Spec.LambdaConfig.DefineAuthChallengeRef != nil && ko.Spec.LambdaConfig.DefineAuthChallenge != nil {
+			return ackerr.ResourceReferenceAndIDNotSupportedFor("LambdaConfig.DefineAuthChallenge", "LambdaConfig.DefineAuthChallengeRef")
+		}
+	}
+
+	if ko.Spec.LambdaConfig != nil {
+		if ko.Spec.LambdaConfig.KMSKeyRef != nil && ko.Spec.LambdaConfig.KMSKeyID != nil {
+			return ackerr.ResourceReferenceAndIDNotSupportedFor("LambdaConfig.KMSKeyID", "LambdaConfig.KMSKeyRef")
+		}
+	}
+
+	if ko.Spec.LambdaConfig != nil {
+		if ko.Spec.LambdaConfig.PostAuthenticationRef != nil && ko.Spec.LambdaConfig.PostAuthentication != nil {
+			return ackerr.ResourceReferenceAndIDNotSupportedFor("LambdaConfig.PostAuthentication", "LambdaConfig.PostAuthenticationRef")
+		}
+	}
+
+	if ko.Spec.LambdaConfig != nil {
+		if ko.Spec.LambdaConfig.PostConfirmationRef != nil && ko.Spec.LambdaConfig.PostConfirmation != nil {
+			return ackerr.ResourceReferenceAndIDNotSupportedFor("LambdaConfig.PostConfirmation", "LambdaConfig.PostConfirmationRef")
+		}
+	}
+
+	if ko.Spec.LambdaConfig != nil {
+		if ko.Spec.LambdaConfig.PreAuthenticationRef != nil && ko.Spec.LambdaConfig.PreAuthentication != nil {
+			return ackerr.ResourceReferenceAndIDNotSupportedFor("LambdaConfig.PreAuthentication", "LambdaConfig.PreAuthenticationRef")
+		}
+	}
+
+	if ko.Spec.LambdaConfig != nil {
+		if ko.Spec.LambdaConfig.PreSignUpRef != nil && ko.Spec.LambdaConfig.PreSignUp != nil {
+			return ackerr.ResourceReferenceAndIDNotSupportedFor("LambdaConfig.PreSignUp", "LambdaConfig.PreSignUpRef")
+		}
+	}
+
+	if ko.Spec.LambdaConfig != nil {
+		if ko.Spec.LambdaConfig.PreTokenGenerationRef != nil && ko.Spec.LambdaConfig.PreTokenGeneration != nil {
+			return ackerr.ResourceReferenceAndIDNotSupportedFor("LambdaConfig.PreTokenGeneration", "LambdaConfig.PreTokenGenerationRef")
+		}
+	}
+
+	if ko.Spec.LambdaConfig != nil {
+		if ko.Spec.LambdaConfig.PreTokenGenerationConfig != nil {
+			if ko.Spec.LambdaConfig.PreTokenGenerationConfig.LambdaRef != nil && ko.Spec.LambdaConfig.PreTokenGenerationConfig.LambdaARN != nil {
+				return ackerr.ResourceReferenceAndIDNotSupportedFor("LambdaConfig.PreTokenGenerationConfig.LambdaARN", "LambdaConfig.PreTokenGenerationConfig.LambdaRef")
+			}
+		}
+	}
+
+	if ko.Spec.LambdaConfig != nil {
+		if ko.Spec.LambdaConfig.UserMigrationRef != nil && ko.Spec.LambdaConfig.UserMigration != nil {
+			return ackerr.ResourceReferenceAndIDNotSupportedFor("LambdaConfig.UserMigration", "LambdaConfig.UserMigrationRef")
+		}
+	}
+
+	if ko.Spec.LambdaConfig != nil {
+		if ko.Spec.LambdaConfig.VerifyAuthChallengeResponseRef != nil && ko.Spec.LambdaConfig.VerifyAuthChallengeResponse != nil {
+			return ackerr.ResourceReferenceAndIDNotSupportedFor("LambdaConfig.VerifyAuthChallengeResponse", "LambdaConfig.VerifyAuthChallengeResponseRef")
+		}
+	}
+
+	if ko.Spec.SmsConfiguration != nil {
+		if ko.Spec.SmsConfiguration.SNSCallerRef != nil && ko.Spec.SmsConfiguration.SNSCallerARN != nil {
+			return ackerr.ResourceReferenceAndIDNotSupportedFor("SmsConfiguration.SNSCallerARN", "SmsConfiguration.SNSCallerRef")
+		}
+	}
+	return nil
+}
+
+// resolveReferenceForLambdaConfig_CreateAuthChallenge reads the resource referenced
+// from LambdaConfig.CreateAuthChallengeRef field and sets the LambdaConfig.CreateAuthChallenge
+// from referenced resource. Returns a boolean indicating whether a reference
+// contains references, or an error
+func (rm *resourceManager) resolveReferenceForLambdaConfig_CreateAuthChallenge(
+	ctx context.Context,
+	apiReader client.Reader,
+	ko *svcapitypes.UserPool,
+) (hasReferences bool, err error) {
+	if ko.Spec.LambdaConfig != nil {
+		if ko.Spec.LambdaConfig.CreateAuthChallengeRef != nil && ko.Spec.LambdaConfig.CreateAuthChallengeRef.From != nil {
+			hasReferences = true
+			arr := ko.Spec.LambdaConfig.CreateAuthChallengeRef.From
+			if arr.Name == nil || *arr.Name == "" {
+				return hasReferences, fmt.Errorf("provided resource reference is nil or empty: LambdaConfig.CreateAuthChallengeRef")
+			}
+			namespace, err := ackrt.ResolveCrossNamespaceReference(
+				ctx,
+				rm.cfg.EnableCrossNamespace,
+				&ko.Status.Conditions,
+				ackrt.CrossNamespaceRefKindResource,
+				ko.ObjectMeta.GetNamespace(),
+				arr.Namespace,
+				*arr.Name,
+			)
+			if err != nil {
+				return hasReferences, err
+			}
+			obj := &lambdaapitypes.Function{}
+			if err := getReferencedResourceState_Function(ctx, apiReader, obj, *arr.Name, namespace); err != nil {
+				return hasReferences, err
+			}
+			ko.Spec.LambdaConfig.CreateAuthChallenge = (*string)(obj.Status.ACKResourceMetadata.ARN)
+		}
+	}
+
+	return hasReferences, nil
+}
+
+// getReferencedResourceState_Function looks up whether a referenced resource
+// exists and is in a ACK.ResourceSynced=True state. If the referenced resource does exist and is
+// in a Synced state, returns nil, otherwise returns `ackerr.ResourceReferenceTerminalFor` or
+// `ResourceReferenceNotSyncedFor` depending on if the resource is in a Terminal state.
+func getReferencedResourceState_Function(
+	ctx context.Context,
+	apiReader client.Reader,
+	obj *lambdaapitypes.Function,
+	name string, // the Kubernetes name of the referenced resource
+	namespace string, // the Kubernetes namespace of the referenced resource
+) error {
+	namespacedName := types.NamespacedName{
+		Namespace: namespace,
+		Name:      name,
+	}
+	err := apiReader.Get(ctx, namespacedName, obj)
+	if err != nil {
+		return err
+	}
+	var refResourceTerminal bool
+	for _, cond := range obj.Status.Conditions {
+		if cond.Type == ackv1alpha1.ConditionTypeTerminal &&
+			cond.Status == corev1.ConditionTrue {
+			return ackerr.ResourceReferenceTerminalFor(
+				"Function",
+				namespace, name)
+		}
+	}
+	if refResourceTerminal {
+		return ackerr.ResourceReferenceTerminalFor(
+			"Function",
+			namespace, name)
+	}
+	var refResourceSynced bool
+	for _, cond := range obj.Status.Conditions {
+		if cond.Type == ackv1alpha1.ConditionTypeResourceSynced &&
+			cond.Status == corev1.ConditionTrue {
+			refResourceSynced = true
+		}
+	}
+	if !refResourceSynced {
+		return ackerr.ResourceReferenceNotSyncedFor(
+			"Function",
+			namespace, name)
+	}
+	if obj.Status.ACKResourceMetadata == nil || obj.Status.ACKResourceMetadata.ARN == nil {
+		return ackerr.ResourceReferenceMissingTargetFieldFor(
+			"Function",
+			namespace, name,
+			"Status.ACKResourceMetadata.ARN")
+	}
+	return nil
+}
+
+// resolveReferenceForLambdaConfig_CustomEmailSender_LambdaARN reads the resource referenced
+// from LambdaConfig.CustomEmailSender.LambdaRef field and sets the LambdaConfig.CustomEmailSender.LambdaARN
+// from referenced resource. Returns a boolean indicating whether a reference
+// contains references, or an error
+func (rm *resourceManager) resolveReferenceForLambdaConfig_CustomEmailSender_LambdaARN(
+	ctx context.Context,
+	apiReader client.Reader,
+	ko *svcapitypes.UserPool,
+) (hasReferences bool, err error) {
+	if ko.Spec.LambdaConfig != nil {
+		if ko.Spec.LambdaConfig.CustomEmailSender != nil {
+			if ko.Spec.LambdaConfig.CustomEmailSender.LambdaRef != nil && ko.Spec.LambdaConfig.CustomEmailSender.LambdaRef.From != nil {
+				hasReferences = true
+				arr := ko.Spec.LambdaConfig.CustomEmailSender.LambdaRef.From
+				if arr.Name == nil || *arr.Name == "" {
+					return hasReferences, fmt.Errorf("provided resource reference is nil or empty: LambdaConfig.CustomEmailSender.LambdaRef")
+				}
+				namespace, err := ackrt.ResolveCrossNamespaceReference(
+					ctx,
+					rm.cfg.EnableCrossNamespace,
+					&ko.Status.Conditions,
+					ackrt.CrossNamespaceRefKindResource,
+					ko.ObjectMeta.GetNamespace(),
+					arr.Namespace,
+					*arr.Name,
+				)
+				if err != nil {
+					return hasReferences, err
+				}
+				obj := &lambdaapitypes.Function{}
+				if err := getReferencedResourceState_Function(ctx, apiReader, obj, *arr.Name, namespace); err != nil {
+					return hasReferences, err
+				}
+				ko.Spec.LambdaConfig.CustomEmailSender.LambdaARN = (*string)(obj.Status.ACKResourceMetadata.ARN)
+			}
+		}
+	}
+
+	return hasReferences, nil
+}
+
+// resolveReferenceForLambdaConfig_CustomMessage reads the resource referenced
+// from LambdaConfig.CustomMessageRef field and sets the LambdaConfig.CustomMessage
+// from referenced resource. Returns a boolean indicating whether a reference
+// contains references, or an error
+func (rm *resourceManager) resolveReferenceForLambdaConfig_CustomMessage(
+	ctx context.Context,
+	apiReader client.Reader,
+	ko *svcapitypes.UserPool,
+) (hasReferences bool, err error) {
+	if ko.Spec.LambdaConfig != nil {
+		if ko.Spec.LambdaConfig.CustomMessageRef != nil && ko.Spec.LambdaConfig.CustomMessageRef.From != nil {
+			hasReferences = true
+			arr := ko.Spec.LambdaConfig.CustomMessageRef.From
+			if arr.Name == nil || *arr.Name == "" {
+				return hasReferences, fmt.Errorf("provided resource reference is nil or empty: LambdaConfig.CustomMessageRef")
+			}
+			namespace, err := ackrt.ResolveCrossNamespaceReference(
+				ctx,
+				rm.cfg.EnableCrossNamespace,
+				&ko.Status.Conditions,
+				ackrt.CrossNamespaceRefKindResource,
+				ko.ObjectMeta.GetNamespace(),
+				arr.Namespace,
+				*arr.Name,
+			)
+			if err != nil {
+				return hasReferences, err
+			}
+			obj := &lambdaapitypes.Function{}
+			if err := getReferencedResourceState_Function(ctx, apiReader, obj, *arr.Name, namespace); err != nil {
+				return hasReferences, err
+			}
+			ko.Spec.LambdaConfig.CustomMessage = (*string)(obj.Status.ACKResourceMetadata.ARN)
+		}
+	}
+
+	return hasReferences, nil
+}
+
+// resolveReferenceForLambdaConfig_CustomSMSSender_LambdaARN reads the resource referenced
+// from LambdaConfig.CustomSMSSender.LambdaRef field and sets the LambdaConfig.CustomSMSSender.LambdaARN
+// from referenced resource. Returns a boolean indicating whether a reference
+// contains references, or an error
+func (rm *resourceManager) resolveReferenceForLambdaConfig_CustomSMSSender_LambdaARN(
+	ctx context.Context,
+	apiReader client.Reader,
+	ko *svcapitypes.UserPool,
+) (hasReferences bool, err error) {
+	if ko.Spec.LambdaConfig != nil {
+		if ko.Spec.LambdaConfig.CustomSMSSender != nil {
+			if ko.Spec.LambdaConfig.CustomSMSSender.LambdaRef != nil && ko.Spec.LambdaConfig.CustomSMSSender.LambdaRef.From != nil {
+				hasReferences = true
+				arr := ko.Spec.LambdaConfig.CustomSMSSender.LambdaRef.From
+				if arr.Name == nil || *arr.Name == "" {
+					return hasReferences, fmt.Errorf("provided resource reference is nil or empty: LambdaConfig.CustomSMSSender.LambdaRef")
+				}
+				namespace, err := ackrt.ResolveCrossNamespaceReference(
+					ctx,
+					rm.cfg.EnableCrossNamespace,
+					&ko.Status.Conditions,
+					ackrt.CrossNamespaceRefKindResource,
+					ko.ObjectMeta.GetNamespace(),
+					arr.Namespace,
+					*arr.Name,
+				)
+				if err != nil {
+					return hasReferences, err
+				}
+				obj := &lambdaapitypes.Function{}
+				if err := getReferencedResourceState_Function(ctx, apiReader, obj, *arr.Name, namespace); err != nil {
+					return hasReferences, err
+				}
+				ko.Spec.LambdaConfig.CustomSMSSender.LambdaARN = (*string)(obj.Status.ACKResourceMetadata.ARN)
+			}
+		}
+	}
+
+	return hasReferences, nil
+}
+
+// resolveReferenceForLambdaConfig_DefineAuthChallenge reads the resource referenced
+// from LambdaConfig.DefineAuthChallengeRef field and sets the LambdaConfig.DefineAuthChallenge
+// from referenced resource. Returns a boolean indicating whether a reference
+// contains references, or an error
+func (rm *resourceManager) resolveReferenceForLambdaConfig_DefineAuthChallenge(
+	ctx context.Context,
+	apiReader client.Reader,
+	ko *svcapitypes.UserPool,
+) (hasReferences bool, err error) {
+	if ko.Spec.LambdaConfig != nil {
+		if ko.Spec.LambdaConfig.DefineAuthChallengeRef != nil && ko.Spec.LambdaConfig.DefineAuthChallengeRef.From != nil {
+			hasReferences = true
+			arr := ko.Spec.LambdaConfig.DefineAuthChallengeRef.From
+			if arr.Name == nil || *arr.Name == "" {
+				return hasReferences, fmt.Errorf("provided resource reference is nil or empty: LambdaConfig.DefineAuthChallengeRef")
+			}
+			namespace, err := ackrt.ResolveCrossNamespaceReference(
+				ctx,
+				rm.cfg.EnableCrossNamespace,
+				&ko.Status.Conditions,
+				ackrt.CrossNamespaceRefKindResource,
+				ko.ObjectMeta.GetNamespace(),
+				arr.Namespace,
+				*arr.Name,
+			)
+			if err != nil {
+				return hasReferences, err
+			}
+			obj := &lambdaapitypes.Function{}
+			if err := getReferencedResourceState_Function(ctx, apiReader, obj, *arr.Name, namespace); err != nil {
+				return hasReferences, err
+			}
+			ko.Spec.LambdaConfig.DefineAuthChallenge = (*string)(obj.Status.ACKResourceMetadata.ARN)
+		}
+	}
+
+	return hasReferences, nil
+}
+
+// resolveReferenceForLambdaConfig_KMSKeyID reads the resource referenced
+// from LambdaConfig.KMSKeyRef field and sets the LambdaConfig.KMSKeyID
+// from referenced resource. Returns a boolean indicating whether a reference
+// contains references, or an error
+func (rm *resourceManager) resolveReferenceForLambdaConfig_KMSKeyID(
+	ctx context.Context,
+	apiReader client.Reader,
+	ko *svcapitypes.UserPool,
+) (hasReferences bool, err error) {
+	if ko.Spec.LambdaConfig != nil {
+		if ko.Spec.LambdaConfig.KMSKeyRef != nil && ko.Spec.LambdaConfig.KMSKeyRef.From != nil {
+			hasReferences = true
+			arr := ko.Spec.LambdaConfig.KMSKeyRef.From
+			if arr.Name == nil || *arr.Name == "" {
+				return hasReferences, fmt.Errorf("provided resource reference is nil or empty: LambdaConfig.KMSKeyRef")
+			}
+			namespace, err := ackrt.ResolveCrossNamespaceReference(
+				ctx,
+				rm.cfg.EnableCrossNamespace,
+				&ko.Status.Conditions,
+				ackrt.CrossNamespaceRefKindResource,
+				ko.ObjectMeta.GetNamespace(),
+				arr.Namespace,
+				*arr.Name,
+			)
+			if err != nil {
+				return hasReferences, err
+			}
+			obj := &kmsapitypes.Key{}
+			if err := getReferencedResourceState_Key(ctx, apiReader, obj, *arr.Name, namespace); err != nil {
+				return hasReferences, err
+			}
+			ko.Spec.LambdaConfig.KMSKeyID = (*string)(obj.Status.ACKResourceMetadata.ARN)
+		}
+	}
+
+	return hasReferences, nil
+}
+
+// getReferencedResourceState_Key looks up whether a referenced resource
+// exists and is in a ACK.ResourceSynced=True state. If the referenced resource does exist and is
+// in a Synced state, returns nil, otherwise returns `ackerr.ResourceReferenceTerminalFor` or
+// `ResourceReferenceNotSyncedFor` depending on if the resource is in a Terminal state.
+func getReferencedResourceState_Key(
+	ctx context.Context,
+	apiReader client.Reader,
+	obj *kmsapitypes.Key,
+	name string, // the Kubernetes name of the referenced resource
+	namespace string, // the Kubernetes namespace of the referenced resource
+) error {
+	namespacedName := types.NamespacedName{
+		Namespace: namespace,
+		Name:      name,
+	}
+	err := apiReader.Get(ctx, namespacedName, obj)
+	if err != nil {
+		return err
+	}
+	var refResourceTerminal bool
+	for _, cond := range obj.Status.Conditions {
+		if cond.Type == ackv1alpha1.ConditionTypeTerminal &&
+			cond.Status == corev1.ConditionTrue {
+			return ackerr.ResourceReferenceTerminalFor(
+				"Key",
+				namespace, name)
+		}
+	}
+	if refResourceTerminal {
+		return ackerr.ResourceReferenceTerminalFor(
+			"Key",
+			namespace, name)
+	}
+	var refResourceSynced bool
+	for _, cond := range obj.Status.Conditions {
+		if cond.Type == ackv1alpha1.ConditionTypeResourceSynced &&
+			cond.Status == corev1.ConditionTrue {
+			refResourceSynced = true
+		}
+	}
+	if !refResourceSynced {
+		return ackerr.ResourceReferenceNotSyncedFor(
+			"Key",
+			namespace, name)
+	}
+	if obj.Status.ACKResourceMetadata == nil || obj.Status.ACKResourceMetadata.ARN == nil {
+		return ackerr.ResourceReferenceMissingTargetFieldFor(
+			"Key",
+			namespace, name,
+			"Status.ACKResourceMetadata.ARN")
+	}
+	return nil
+}
+
+// resolveReferenceForLambdaConfig_PostAuthentication reads the resource referenced
+// from LambdaConfig.PostAuthenticationRef field and sets the LambdaConfig.PostAuthentication
+// from referenced resource. Returns a boolean indicating whether a reference
+// contains references, or an error
+func (rm *resourceManager) resolveReferenceForLambdaConfig_PostAuthentication(
+	ctx context.Context,
+	apiReader client.Reader,
+	ko *svcapitypes.UserPool,
+) (hasReferences bool, err error) {
+	if ko.Spec.LambdaConfig != nil {
+		if ko.Spec.LambdaConfig.PostAuthenticationRef != nil && ko.Spec.LambdaConfig.PostAuthenticationRef.From != nil {
+			hasReferences = true
+			arr := ko.Spec.LambdaConfig.PostAuthenticationRef.From
+			if arr.Name == nil || *arr.Name == "" {
+				return hasReferences, fmt.Errorf("provided resource reference is nil or empty: LambdaConfig.PostAuthenticationRef")
+			}
+			namespace, err := ackrt.ResolveCrossNamespaceReference(
+				ctx,
+				rm.cfg.EnableCrossNamespace,
+				&ko.Status.Conditions,
+				ackrt.CrossNamespaceRefKindResource,
+				ko.ObjectMeta.GetNamespace(),
+				arr.Namespace,
+				*arr.Name,
+			)
+			if err != nil {
+				return hasReferences, err
+			}
+			obj := &lambdaapitypes.Function{}
+			if err := getReferencedResourceState_Function(ctx, apiReader, obj, *arr.Name, namespace); err != nil {
+				return hasReferences, err
+			}
+			ko.Spec.LambdaConfig.PostAuthentication = (*string)(obj.Status.ACKResourceMetadata.ARN)
+		}
+	}
+
+	return hasReferences, nil
+}
+
+// resolveReferenceForLambdaConfig_PostConfirmation reads the resource referenced
+// from LambdaConfig.PostConfirmationRef field and sets the LambdaConfig.PostConfirmation
+// from referenced resource. Returns a boolean indicating whether a reference
+// contains references, or an error
+func (rm *resourceManager) resolveReferenceForLambdaConfig_PostConfirmation(
+	ctx context.Context,
+	apiReader client.Reader,
+	ko *svcapitypes.UserPool,
+) (hasReferences bool, err error) {
+	if ko.Spec.LambdaConfig != nil {
+		if ko.Spec.LambdaConfig.PostConfirmationRef != nil && ko.Spec.LambdaConfig.PostConfirmationRef.From != nil {
+			hasReferences = true
+			arr := ko.Spec.LambdaConfig.PostConfirmationRef.From
+			if arr.Name == nil || *arr.Name == "" {
+				return hasReferences, fmt.Errorf("provided resource reference is nil or empty: LambdaConfig.PostConfirmationRef")
+			}
+			namespace, err := ackrt.ResolveCrossNamespaceReference(
+				ctx,
+				rm.cfg.EnableCrossNamespace,
+				&ko.Status.Conditions,
+				ackrt.CrossNamespaceRefKindResource,
+				ko.ObjectMeta.GetNamespace(),
+				arr.Namespace,
+				*arr.Name,
+			)
+			if err != nil {
+				return hasReferences, err
+			}
+			obj := &lambdaapitypes.Function{}
+			if err := getReferencedResourceState_Function(ctx, apiReader, obj, *arr.Name, namespace); err != nil {
+				return hasReferences, err
+			}
+			ko.Spec.LambdaConfig.PostConfirmation = (*string)(obj.Status.ACKResourceMetadata.ARN)
+		}
+	}
+
+	return hasReferences, nil
+}
+
+// resolveReferenceForLambdaConfig_PreAuthentication reads the resource referenced
+// from LambdaConfig.PreAuthenticationRef field and sets the LambdaConfig.PreAuthentication
+// from referenced resource. Returns a boolean indicating whether a reference
+// contains references, or an error
+func (rm *resourceManager) resolveReferenceForLambdaConfig_PreAuthentication(
+	ctx context.Context,
+	apiReader client.Reader,
+	ko *svcapitypes.UserPool,
+) (hasReferences bool, err error) {
+	if ko.Spec.LambdaConfig != nil {
+		if ko.Spec.LambdaConfig.PreAuthenticationRef != nil && ko.Spec.LambdaConfig.PreAuthenticationRef.From != nil {
+			hasReferences = true
+			arr := ko.Spec.LambdaConfig.PreAuthenticationRef.From
+			if arr.Name == nil || *arr.Name == "" {
+				return hasReferences, fmt.Errorf("provided resource reference is nil or empty: LambdaConfig.PreAuthenticationRef")
+			}
+			namespace, err := ackrt.ResolveCrossNamespaceReference(
+				ctx,
+				rm.cfg.EnableCrossNamespace,
+				&ko.Status.Conditions,
+				ackrt.CrossNamespaceRefKindResource,
+				ko.ObjectMeta.GetNamespace(),
+				arr.Namespace,
+				*arr.Name,
+			)
+			if err != nil {
+				return hasReferences, err
+			}
+			obj := &lambdaapitypes.Function{}
+			if err := getReferencedResourceState_Function(ctx, apiReader, obj, *arr.Name, namespace); err != nil {
+				return hasReferences, err
+			}
+			ko.Spec.LambdaConfig.PreAuthentication = (*string)(obj.Status.ACKResourceMetadata.ARN)
+		}
+	}
+
+	return hasReferences, nil
+}
+
+// resolveReferenceForLambdaConfig_PreSignUp reads the resource referenced
+// from LambdaConfig.PreSignUpRef field and sets the LambdaConfig.PreSignUp
+// from referenced resource. Returns a boolean indicating whether a reference
+// contains references, or an error
+func (rm *resourceManager) resolveReferenceForLambdaConfig_PreSignUp(
+	ctx context.Context,
+	apiReader client.Reader,
+	ko *svcapitypes.UserPool,
+) (hasReferences bool, err error) {
+	if ko.Spec.LambdaConfig != nil {
+		if ko.Spec.LambdaConfig.PreSignUpRef != nil && ko.Spec.LambdaConfig.PreSignUpRef.From != nil {
+			hasReferences = true
+			arr := ko.Spec.LambdaConfig.PreSignUpRef.From
+			if arr.Name == nil || *arr.Name == "" {
+				return hasReferences, fmt.Errorf("provided resource reference is nil or empty: LambdaConfig.PreSignUpRef")
+			}
+			namespace, err := ackrt.ResolveCrossNamespaceReference(
+				ctx,
+				rm.cfg.EnableCrossNamespace,
+				&ko.Status.Conditions,
+				ackrt.CrossNamespaceRefKindResource,
+				ko.ObjectMeta.GetNamespace(),
+				arr.Namespace,
+				*arr.Name,
+			)
+			if err != nil {
+				return hasReferences, err
+			}
+			obj := &lambdaapitypes.Function{}
+			if err := getReferencedResourceState_Function(ctx, apiReader, obj, *arr.Name, namespace); err != nil {
+				return hasReferences, err
+			}
+			ko.Spec.LambdaConfig.PreSignUp = (*string)(obj.Status.ACKResourceMetadata.ARN)
+		}
+	}
+
+	return hasReferences, nil
+}
+
+// resolveReferenceForLambdaConfig_PreTokenGeneration reads the resource referenced
+// from LambdaConfig.PreTokenGenerationRef field and sets the LambdaConfig.PreTokenGeneration
+// from referenced resource. Returns a boolean indicating whether a reference
+// contains references, or an error
+func (rm *resourceManager) resolveReferenceForLambdaConfig_PreTokenGeneration(
+	ctx context.Context,
+	apiReader client.Reader,
+	ko *svcapitypes.UserPool,
+) (hasReferences bool, err error) {
+	if ko.Spec.LambdaConfig != nil {
+		if ko.Spec.LambdaConfig.PreTokenGenerationRef != nil && ko.Spec.LambdaConfig.PreTokenGenerationRef.From != nil {
+			hasReferences = true
+			arr := ko.Spec.LambdaConfig.PreTokenGenerationRef.From
+			if arr.Name == nil || *arr.Name == "" {
+				return hasReferences, fmt.Errorf("provided resource reference is nil or empty: LambdaConfig.PreTokenGenerationRef")
+			}
+			namespace, err := ackrt.ResolveCrossNamespaceReference(
+				ctx,
+				rm.cfg.EnableCrossNamespace,
+				&ko.Status.Conditions,
+				ackrt.CrossNamespaceRefKindResource,
+				ko.ObjectMeta.GetNamespace(),
+				arr.Namespace,
+				*arr.Name,
+			)
+			if err != nil {
+				return hasReferences, err
+			}
+			obj := &lambdaapitypes.Function{}
+			if err := getReferencedResourceState_Function(ctx, apiReader, obj, *arr.Name, namespace); err != nil {
+				return hasReferences, err
+			}
+			ko.Spec.LambdaConfig.PreTokenGeneration = (*string)(obj.Status.ACKResourceMetadata.ARN)
+		}
+	}
+
+	return hasReferences, nil
+}
+
+// resolveReferenceForLambdaConfig_PreTokenGenerationConfig_LambdaARN reads the resource referenced
+// from LambdaConfig.PreTokenGenerationConfig.LambdaRef field and sets the LambdaConfig.PreTokenGenerationConfig.LambdaARN
+// from referenced resource. Returns a boolean indicating whether a reference
+// contains references, or an error
+func (rm *resourceManager) resolveReferenceForLambdaConfig_PreTokenGenerationConfig_LambdaARN(
+	ctx context.Context,
+	apiReader client.Reader,
+	ko *svcapitypes.UserPool,
+) (hasReferences bool, err error) {
+	if ko.Spec.LambdaConfig != nil {
+		if ko.Spec.LambdaConfig.PreTokenGenerationConfig != nil {
+			if ko.Spec.LambdaConfig.PreTokenGenerationConfig.LambdaRef != nil && ko.Spec.LambdaConfig.PreTokenGenerationConfig.LambdaRef.From != nil {
+				hasReferences = true
+				arr := ko.Spec.LambdaConfig.PreTokenGenerationConfig.LambdaRef.From
+				if arr.Name == nil || *arr.Name == "" {
+					return hasReferences, fmt.Errorf("provided resource reference is nil or empty: LambdaConfig.PreTokenGenerationConfig.LambdaRef")
+				}
+				namespace, err := ackrt.ResolveCrossNamespaceReference(
+					ctx,
+					rm.cfg.EnableCrossNamespace,
+					&ko.Status.Conditions,
+					ackrt.CrossNamespaceRefKindResource,
+					ko.ObjectMeta.GetNamespace(),
+					arr.Namespace,
+					*arr.Name,
+				)
+				if err != nil {
+					return hasReferences, err
+				}
+				obj := &lambdaapitypes.Function{}
+				if err := getReferencedResourceState_Function(ctx, apiReader, obj, *arr.Name, namespace); err != nil {
+					return hasReferences, err
+				}
+				ko.Spec.LambdaConfig.PreTokenGenerationConfig.LambdaARN = (*string)(obj.Status.ACKResourceMetadata.ARN)
+			}
+		}
+	}
+
+	return hasReferences, nil
+}
+
+// resolveReferenceForLambdaConfig_UserMigration reads the resource referenced
+// from LambdaConfig.UserMigrationRef field and sets the LambdaConfig.UserMigration
+// from referenced resource. Returns a boolean indicating whether a reference
+// contains references, or an error
+func (rm *resourceManager) resolveReferenceForLambdaConfig_UserMigration(
+	ctx context.Context,
+	apiReader client.Reader,
+	ko *svcapitypes.UserPool,
+) (hasReferences bool, err error) {
+	if ko.Spec.LambdaConfig != nil {
+		if ko.Spec.LambdaConfig.UserMigrationRef != nil && ko.Spec.LambdaConfig.UserMigrationRef.From != nil {
+			hasReferences = true
+			arr := ko.Spec.LambdaConfig.UserMigrationRef.From
+			if arr.Name == nil || *arr.Name == "" {
+				return hasReferences, fmt.Errorf("provided resource reference is nil or empty: LambdaConfig.UserMigrationRef")
+			}
+			namespace, err := ackrt.ResolveCrossNamespaceReference(
+				ctx,
+				rm.cfg.EnableCrossNamespace,
+				&ko.Status.Conditions,
+				ackrt.CrossNamespaceRefKindResource,
+				ko.ObjectMeta.GetNamespace(),
+				arr.Namespace,
+				*arr.Name,
+			)
+			if err != nil {
+				return hasReferences, err
+			}
+			obj := &lambdaapitypes.Function{}
+			if err := getReferencedResourceState_Function(ctx, apiReader, obj, *arr.Name, namespace); err != nil {
+				return hasReferences, err
+			}
+			ko.Spec.LambdaConfig.UserMigration = (*string)(obj.Status.ACKResourceMetadata.ARN)
+		}
+	}
+
+	return hasReferences, nil
+}
+
+// resolveReferenceForLambdaConfig_VerifyAuthChallengeResponse reads the resource referenced
+// from LambdaConfig.VerifyAuthChallengeResponseRef field and sets the LambdaConfig.VerifyAuthChallengeResponse
+// from referenced resource. Returns a boolean indicating whether a reference
+// contains references, or an error
+func (rm *resourceManager) resolveReferenceForLambdaConfig_VerifyAuthChallengeResponse(
+	ctx context.Context,
+	apiReader client.Reader,
+	ko *svcapitypes.UserPool,
+) (hasReferences bool, err error) {
+	if ko.Spec.LambdaConfig != nil {
+		if ko.Spec.LambdaConfig.VerifyAuthChallengeResponseRef != nil && ko.Spec.LambdaConfig.VerifyAuthChallengeResponseRef.From != nil {
+			hasReferences = true
+			arr := ko.Spec.LambdaConfig.VerifyAuthChallengeResponseRef.From
+			if arr.Name == nil || *arr.Name == "" {
+				return hasReferences, fmt.Errorf("provided resource reference is nil or empty: LambdaConfig.VerifyAuthChallengeResponseRef")
+			}
+			namespace, err := ackrt.ResolveCrossNamespaceReference(
+				ctx,
+				rm.cfg.EnableCrossNamespace,
+				&ko.Status.Conditions,
+				ackrt.CrossNamespaceRefKindResource,
+				ko.ObjectMeta.GetNamespace(),
+				arr.Namespace,
+				*arr.Name,
+			)
+			if err != nil {
+				return hasReferences, err
+			}
+			obj := &lambdaapitypes.Function{}
+			if err := getReferencedResourceState_Function(ctx, apiReader, obj, *arr.Name, namespace); err != nil {
+				return hasReferences, err
+			}
+			ko.Spec.LambdaConfig.VerifyAuthChallengeResponse = (*string)(obj.Status.ACKResourceMetadata.ARN)
+		}
+	}
+
+	return hasReferences, nil
+}
+
+// resolveReferenceForSmsConfiguration_SNSCallerARN reads the resource referenced
+// from SmsConfiguration.SNSCallerRef field and sets the SmsConfiguration.SNSCallerARN
+// from referenced resource. Returns a boolean indicating whether a reference
+// contains references, or an error
+func (rm *resourceManager) resolveReferenceForSmsConfiguration_SNSCallerARN(
+	ctx context.Context,
+	apiReader client.Reader,
+	ko *svcapitypes.UserPool,
+) (hasReferences bool, err error) {
+	if ko.Spec.SmsConfiguration != nil {
+		if ko.Spec.SmsConfiguration.SNSCallerRef != nil && ko.Spec.SmsConfiguration.SNSCallerRef.From != nil {
+			hasReferences = true
+			arr := ko.Spec.SmsConfiguration.SNSCallerRef.From
+			if arr.Name == nil || *arr.Name == "" {
+				return hasReferences, fmt.Errorf("provided resource reference is nil or empty: SmsConfiguration.SNSCallerRef")
+			}
+			namespace, err := ackrt.ResolveCrossNamespaceReference(
+				ctx,
+				rm.cfg.EnableCrossNamespace,
+				&ko.Status.Conditions,
+				ackrt.CrossNamespaceRefKindResource,
+				ko.ObjectMeta.GetNamespace(),
+				arr.Namespace,
+				*arr.Name,
+			)
+			if err != nil {
+				return hasReferences, err
+			}
+			obj := &iamapitypes.Role{}
+			if err := getReferencedResourceState_Role(ctx, apiReader, obj, *arr.Name, namespace); err != nil {
+				return hasReferences, err
+			}
+			ko.Spec.SmsConfiguration.SNSCallerARN = (*string)(obj.Status.ACKResourceMetadata.ARN)
+		}
+	}
+
+	return hasReferences, nil
+}
+
+// getReferencedResourceState_Role looks up whether a referenced resource
+// exists and is in a ACK.ResourceSynced=True state. If the referenced resource does exist and is
+// in a Synced state, returns nil, otherwise returns `ackerr.ResourceReferenceTerminalFor` or
+// `ResourceReferenceNotSyncedFor` depending on if the resource is in a Terminal state.
+func getReferencedResourceState_Role(
+	ctx context.Context,
+	apiReader client.Reader,
+	obj *iamapitypes.Role,
+	name string, // the Kubernetes name of the referenced resource
+	namespace string, // the Kubernetes namespace of the referenced resource
+) error {
+	namespacedName := types.NamespacedName{
+		Namespace: namespace,
+		Name:      name,
+	}
+	err := apiReader.Get(ctx, namespacedName, obj)
+	if err != nil {
+		return err
+	}
+	var refResourceTerminal bool
+	for _, cond := range obj.Status.Conditions {
+		if cond.Type == ackv1alpha1.ConditionTypeTerminal &&
+			cond.Status == corev1.ConditionTrue {
+			return ackerr.ResourceReferenceTerminalFor(
+				"Role",
+				namespace, name)
+		}
+	}
+	if refResourceTerminal {
+		return ackerr.ResourceReferenceTerminalFor(
+			"Role",
+			namespace, name)
+	}
+	var refResourceSynced bool
+	for _, cond := range obj.Status.Conditions {
+		if cond.Type == ackv1alpha1.ConditionTypeResourceSynced &&
+			cond.Status == corev1.ConditionTrue {
+			refResourceSynced = true
+		}
+	}
+	if !refResourceSynced {
+		return ackerr.ResourceReferenceNotSyncedFor(
+			"Role",
+			namespace, name)
+	}
+	if obj.Status.ACKResourceMetadata == nil || obj.Status.ACKResourceMetadata.ARN == nil {
+		return ackerr.ResourceReferenceMissingTargetFieldFor(
+			"Role",
+			namespace, name,
+			"Status.ACKResourceMetadata.ARN")
+	}
 	return nil
 }
