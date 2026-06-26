@@ -167,6 +167,20 @@ spec:
                 properties:
                   createAuthChallenge:
                     type: string
+                  createAuthChallengeRef:
+                    description: Reference field for CreateAuthChallenge
+                    properties:
+                      from:
+                        description: |-
+                          AWSResourceReference provides all the values necessary to reference another
+                          k8s resource for finding the identifier(Id/ARN/Name)
+                        properties:
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        type: object
+                    type: object
                   customEmailSender:
                     description: |-
                       The properties of a custom email sender Lambda trigger.
@@ -177,11 +191,39 @@ spec:
                     properties:
                       lambdaARN:
                         type: string
+                      lambdaRef:
+                        description: Reference field for LambdaARN
+                        properties:
+                          from:
+                            description: |-
+                              AWSResourceReference provides all the values necessary to reference another
+                              k8s resource for finding the identifier(Id/ARN/Name)
+                            properties:
+                              name:
+                                type: string
+                              namespace:
+                                type: string
+                            type: object
+                        type: object
                       lambdaVersion:
                         type: string
                     type: object
                   customMessage:
                     type: string
+                  customMessageRef:
+                    description: Reference field for CustomMessage
+                    properties:
+                      from:
+                        description: |-
+                          AWSResourceReference provides all the values necessary to reference another
+                          k8s resource for finding the identifier(Id/ARN/Name)
+                        properties:
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        type: object
+                    type: object
                   customSMSSender:
                     description: |-
                       The properties of a custom SMS sender Lambda trigger.
@@ -192,21 +234,119 @@ spec:
                     properties:
                       lambdaARN:
                         type: string
+                      lambdaRef:
+                        description: Reference field for LambdaARN
+                        properties:
+                          from:
+                            description: |-
+                              AWSResourceReference provides all the values necessary to reference another
+                              k8s resource for finding the identifier(Id/ARN/Name)
+                            properties:
+                              name:
+                                type: string
+                              namespace:
+                                type: string
+                            type: object
+                        type: object
                       lambdaVersion:
                         type: string
                     type: object
                   defineAuthChallenge:
                     type: string
+                  defineAuthChallengeRef:
+                    description: Reference field for DefineAuthChallenge
+                    properties:
+                      from:
+                        description: |-
+                          AWSResourceReference provides all the values necessary to reference another
+                          k8s resource for finding the identifier(Id/ARN/Name)
+                        properties:
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        type: object
+                    type: object
                   kmsKeyID:
                     type: string
+                  kmsKeyRef:
+                    description: Reference field for KMSKeyID
+                    properties:
+                      from:
+                        description: |-
+                          AWSResourceReference provides all the values necessary to reference another
+                          k8s resource for finding the identifier(Id/ARN/Name)
+                        properties:
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        type: object
+                    type: object
                   postAuthentication:
                     type: string
+                  postAuthenticationRef:
+                    description: Reference field for PostAuthentication
+                    properties:
+                      from:
+                        description: |-
+                          AWSResourceReference provides all the values necessary to reference another
+                          k8s resource for finding the identifier(Id/ARN/Name)
+                        properties:
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        type: object
+                    type: object
                   postConfirmation:
                     type: string
+                  postConfirmationRef:
+                    description: Reference field for PostConfirmation
+                    properties:
+                      from:
+                        description: |-
+                          AWSResourceReference provides all the values necessary to reference another
+                          k8s resource for finding the identifier(Id/ARN/Name)
+                        properties:
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        type: object
+                    type: object
                   preAuthentication:
                     type: string
+                  preAuthenticationRef:
+                    description: Reference field for PreAuthentication
+                    properties:
+                      from:
+                        description: |-
+                          AWSResourceReference provides all the values necessary to reference another
+                          k8s resource for finding the identifier(Id/ARN/Name)
+                        properties:
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        type: object
+                    type: object
                   preSignUp:
                     type: string
+                  preSignUpRef:
+                    description: Reference field for PreSignUp
+                    properties:
+                      from:
+                        description: |-
+                          AWSResourceReference provides all the values necessary to reference another
+                          k8s resource for finding the identifier(Id/ARN/Name)
+                        properties:
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        type: object
+                    type: object
                   preTokenGeneration:
                     type: string
                   preTokenGenerationConfig:
@@ -219,13 +359,69 @@ spec:
                     properties:
                       lambdaARN:
                         type: string
+                      lambdaRef:
+                        description: Reference field for LambdaARN
+                        properties:
+                          from:
+                            description: |-
+                              AWSResourceReference provides all the values necessary to reference another
+                              k8s resource for finding the identifier(Id/ARN/Name)
+                            properties:
+                              name:
+                                type: string
+                              namespace:
+                                type: string
+                            type: object
+                        type: object
                       lambdaVersion:
                         type: string
                     type: object
+                  preTokenGenerationRef:
+                    description: Reference field for PreTokenGeneration
+                    properties:
+                      from:
+                        description: |-
+                          AWSResourceReference provides all the values necessary to reference another
+                          k8s resource for finding the identifier(Id/ARN/Name)
+                        properties:
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        type: object
+                    type: object
                   userMigration:
                     type: string
+                  userMigrationRef:
+                    description: Reference field for UserMigration
+                    properties:
+                      from:
+                        description: |-
+                          AWSResourceReference provides all the values necessary to reference another
+                          k8s resource for finding the identifier(Id/ARN/Name)
+                        properties:
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        type: object
+                    type: object
                   verifyAuthChallengeResponse:
                     type: string
+                  verifyAuthChallengeResponseRef:
+                    description: Reference field for VerifyAuthChallengeResponse
+                    properties:
+                      from:
+                        description: |-
+                          AWSResourceReference provides all the values necessary to reference another
+                          k8s resource for finding the identifier(Id/ARN/Name)
+                        properties:
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        type: object
+                    type: object
                 type: object
               mfaConfiguration:
                 description: Specifies MFA configuration details.
@@ -349,6 +545,20 @@ spec:
                     type: string
                   snsCallerARN:
                     type: string
+                  snsCallerRef:
+                    description: Reference field for SNSCallerARN
+                    properties:
+                      from:
+                        description: |-
+                          AWSResourceReference provides all the values necessary to reference another
+                          k8s resource for finding the identifier(Id/ARN/Name)
+                        properties:
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        type: object
+                    type: object
                   snsRegion:
                     type: string
                 type: object

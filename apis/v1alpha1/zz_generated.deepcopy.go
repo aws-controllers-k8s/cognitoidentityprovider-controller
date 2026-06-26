@@ -287,6 +287,11 @@ func (in *CustomEmailLambdaVersionConfigType) DeepCopyInto(out *CustomEmailLambd
 		*out = new(string)
 		**out = **in
 	}
+	if in.LambdaRef != nil {
+		in, out := &in.LambdaRef, &out.LambdaRef
+		*out = new(corev1alpha1.AWSResourceReferenceWrapper)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.LambdaVersion != nil {
 		in, out := &in.LambdaVersion, &out.LambdaVersion
 		*out = new(string)
@@ -311,6 +316,11 @@ func (in *CustomSMSLambdaVersionConfigType) DeepCopyInto(out *CustomSMSLambdaVer
 		in, out := &in.LambdaARN, &out.LambdaARN
 		*out = new(string)
 		**out = **in
+	}
+	if in.LambdaRef != nil {
+		in, out := &in.LambdaRef, &out.LambdaRef
+		*out = new(corev1alpha1.AWSResourceReferenceWrapper)
+		(*in).DeepCopyInto(*out)
 	}
 	if in.LambdaVersion != nil {
 		in, out := &in.LambdaVersion, &out.LambdaVersion
@@ -699,6 +709,11 @@ func (in *LambdaConfigType) DeepCopyInto(out *LambdaConfigType) {
 		*out = new(string)
 		**out = **in
 	}
+	if in.CreateAuthChallengeRef != nil {
+		in, out := &in.CreateAuthChallengeRef, &out.CreateAuthChallengeRef
+		*out = new(corev1alpha1.AWSResourceReferenceWrapper)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.CustomEmailSender != nil {
 		in, out := &in.CustomEmailSender, &out.CustomEmailSender
 		*out = new(CustomEmailLambdaVersionConfigType)
@@ -708,6 +723,11 @@ func (in *LambdaConfigType) DeepCopyInto(out *LambdaConfigType) {
 		in, out := &in.CustomMessage, &out.CustomMessage
 		*out = new(string)
 		**out = **in
+	}
+	if in.CustomMessageRef != nil {
+		in, out := &in.CustomMessageRef, &out.CustomMessageRef
+		*out = new(corev1alpha1.AWSResourceReferenceWrapper)
+		(*in).DeepCopyInto(*out)
 	}
 	if in.CustomSMSSender != nil {
 		in, out := &in.CustomSMSSender, &out.CustomSMSSender
@@ -719,30 +739,60 @@ func (in *LambdaConfigType) DeepCopyInto(out *LambdaConfigType) {
 		*out = new(string)
 		**out = **in
 	}
+	if in.DefineAuthChallengeRef != nil {
+		in, out := &in.DefineAuthChallengeRef, &out.DefineAuthChallengeRef
+		*out = new(corev1alpha1.AWSResourceReferenceWrapper)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.KMSKeyID != nil {
 		in, out := &in.KMSKeyID, &out.KMSKeyID
 		*out = new(string)
 		**out = **in
+	}
+	if in.KMSKeyRef != nil {
+		in, out := &in.KMSKeyRef, &out.KMSKeyRef
+		*out = new(corev1alpha1.AWSResourceReferenceWrapper)
+		(*in).DeepCopyInto(*out)
 	}
 	if in.PostAuthentication != nil {
 		in, out := &in.PostAuthentication, &out.PostAuthentication
 		*out = new(string)
 		**out = **in
 	}
+	if in.PostAuthenticationRef != nil {
+		in, out := &in.PostAuthenticationRef, &out.PostAuthenticationRef
+		*out = new(corev1alpha1.AWSResourceReferenceWrapper)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.PostConfirmation != nil {
 		in, out := &in.PostConfirmation, &out.PostConfirmation
 		*out = new(string)
 		**out = **in
+	}
+	if in.PostConfirmationRef != nil {
+		in, out := &in.PostConfirmationRef, &out.PostConfirmationRef
+		*out = new(corev1alpha1.AWSResourceReferenceWrapper)
+		(*in).DeepCopyInto(*out)
 	}
 	if in.PreAuthentication != nil {
 		in, out := &in.PreAuthentication, &out.PreAuthentication
 		*out = new(string)
 		**out = **in
 	}
+	if in.PreAuthenticationRef != nil {
+		in, out := &in.PreAuthenticationRef, &out.PreAuthenticationRef
+		*out = new(corev1alpha1.AWSResourceReferenceWrapper)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.PreSignUp != nil {
 		in, out := &in.PreSignUp, &out.PreSignUp
 		*out = new(string)
 		**out = **in
+	}
+	if in.PreSignUpRef != nil {
+		in, out := &in.PreSignUpRef, &out.PreSignUpRef
+		*out = new(corev1alpha1.AWSResourceReferenceWrapper)
+		(*in).DeepCopyInto(*out)
 	}
 	if in.PreTokenGeneration != nil {
 		in, out := &in.PreTokenGeneration, &out.PreTokenGeneration
@@ -754,15 +804,30 @@ func (in *LambdaConfigType) DeepCopyInto(out *LambdaConfigType) {
 		*out = new(PreTokenGenerationVersionConfigType)
 		(*in).DeepCopyInto(*out)
 	}
+	if in.PreTokenGenerationRef != nil {
+		in, out := &in.PreTokenGenerationRef, &out.PreTokenGenerationRef
+		*out = new(corev1alpha1.AWSResourceReferenceWrapper)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.UserMigration != nil {
 		in, out := &in.UserMigration, &out.UserMigration
 		*out = new(string)
 		**out = **in
 	}
+	if in.UserMigrationRef != nil {
+		in, out := &in.UserMigrationRef, &out.UserMigrationRef
+		*out = new(corev1alpha1.AWSResourceReferenceWrapper)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.VerifyAuthChallengeResponse != nil {
 		in, out := &in.VerifyAuthChallengeResponse, &out.VerifyAuthChallengeResponse
 		*out = new(string)
 		**out = **in
+	}
+	if in.VerifyAuthChallengeResponseRef != nil {
+		in, out := &in.VerifyAuthChallengeResponseRef, &out.VerifyAuthChallengeResponseRef
+		*out = new(corev1alpha1.AWSResourceReferenceWrapper)
+		(*in).DeepCopyInto(*out)
 	}
 }
 
@@ -987,6 +1052,11 @@ func (in *PreTokenGenerationVersionConfigType) DeepCopyInto(out *PreTokenGenerat
 		*out = new(string)
 		**out = **in
 	}
+	if in.LambdaRef != nil {
+		in, out := &in.LambdaRef, &out.LambdaRef
+		*out = new(corev1alpha1.AWSResourceReferenceWrapper)
+		(*in).DeepCopyInto(*out)
+	}
 	if in.LambdaVersion != nil {
 		in, out := &in.LambdaVersion, &out.LambdaVersion
 		*out = new(string)
@@ -1208,6 +1278,11 @@ func (in *SmsConfigurationType) DeepCopyInto(out *SmsConfigurationType) {
 		in, out := &in.SNSCallerARN, &out.SNSCallerARN
 		*out = new(string)
 		**out = **in
+	}
+	if in.SNSCallerRef != nil {
+		in, out := &in.SNSCallerRef, &out.SNSCallerRef
+		*out = new(corev1alpha1.AWSResourceReferenceWrapper)
+		(*in).DeepCopyInto(*out)
 	}
 	if in.SNSRegion != nil {
 		in, out := &in.SNSRegion, &out.SNSRegion
