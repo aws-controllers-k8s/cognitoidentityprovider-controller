@@ -41,6 +41,117 @@ resources:
         from:
           operation: TagResource
           path: Tags
+      # The reference-bearing nested parents. set:ignore keeps the Create/Update
+      # response — which carries the resolved concrete ARN but has no concept of
+      # the *Ref companion — from overwriting the struct and dropping the
+      # reference from the spec. sdkFind still observes the concrete values, so
+      # the delta comparison is unaffected.
+      LambdaConfig:
+        # AWS returns an empty LambdaConfig{} when the struct is omitted, which
+        # set:ignore no longer absorbs; late-init takes it into the spec instead
+        # of leaving a permanent null-vs-{} diff.
+        late_initialize:
+          skip_incomplete_check: {}
+        set:
+          - method: Create
+            ignore: true
+          - method: Update
+            ignore: true
+      SmsConfiguration:
+        set:
+          - method: Create
+            ignore: true
+          - method: Update
+            ignore: true
+      # Lambda trigger references (resolve to the Function's ARN).
+      LambdaConfig.CreateAuthChallenge:
+        references:
+          resource: Function
+          service_name: lambda
+          path: Status.ACKResourceMetadata.ARN
+      LambdaConfig.CustomMessage:
+        references:
+          resource: Function
+          service_name: lambda
+          path: Status.ACKResourceMetadata.ARN
+      LambdaConfig.DefineAuthChallenge:
+        references:
+          resource: Function
+          service_name: lambda
+          path: Status.ACKResourceMetadata.ARN
+      LambdaConfig.PostAuthentication:
+        references:
+          resource: Function
+          service_name: lambda
+          path: Status.ACKResourceMetadata.ARN
+      LambdaConfig.PostConfirmation:
+        references:
+          resource: Function
+          service_name: lambda
+          path: Status.ACKResourceMetadata.ARN
+      LambdaConfig.PreAuthentication:
+        references:
+          resource: Function
+          service_name: lambda
+          path: Status.ACKResourceMetadata.ARN
+      LambdaConfig.PreSignUp:
+        references:
+          resource: Function
+          service_name: lambda
+          path: Status.ACKResourceMetadata.ARN
+      LambdaConfig.UserMigration:
+        references:
+          resource: Function
+          service_name: lambda
+          path: Status.ACKResourceMetadata.ARN
+      LambdaConfig.VerifyAuthChallengeResponse:
+        references:
+          resource: Function
+          service_name: lambda
+          path: Status.ACKResourceMetadata.ARN
+      LambdaConfig.CustomEmailSender.LambdaARN:
+        references:
+          resource: Function
+          service_name: lambda
+          path: Status.ACKResourceMetadata.ARN
+      LambdaConfig.CustomSMSSender.LambdaARN:
+        references:
+          resource: Function
+          service_name: lambda
+          path: Status.ACKResourceMetadata.ARN
+      # Cognito mirrors the deprecated PreTokenGeneration and the newer
+      # PreTokenGenerationConfig: setting either makes DescribeUserPool echo
+      # both, so late-init both leaves to absorb the mirrored value.
+      LambdaConfig.PreTokenGeneration:
+        late_initialize:
+          skip_incomplete_check: {}
+        references:
+          resource: Function
+          service_name: lambda
+          path: Status.ACKResourceMetadata.ARN
+      LambdaConfig.PreTokenGenerationConfig:
+        late_initialize:
+          skip_incomplete_check: {}
+      LambdaConfig.PreTokenGenerationConfig.LambdaARN:
+        references:
+          resource: Function
+          service_name: lambda
+          path: Status.ACKResourceMetadata.ARN
+      LambdaConfig.KMSKeyID:
+        references:
+          resource: Key
+          service_name: kms
+          path: Status.ACKResourceMetadata.ARN
+      SmsConfiguration.SNSCallerARN:
+        references:
+          resource: Role
+          service_name: iam
+          path: Status.ACKResourceMetadata.ARN
+      # AWS defaults SNSRegion to the user pool's region when omitted; late-init
+      # absorbs it so a partial smsConfiguration doesn't perpetually diff.
+      SmsConfiguration.SNSRegion:
+        late_initialize:
+          skip_incomplete_check: {}
     hooks:
       sdk_create_post_set_output:
         template_path: hooks/user_pool/sdk_create_post_set_output.go.tpl

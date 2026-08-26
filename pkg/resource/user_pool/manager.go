@@ -50,7 +50,7 @@ var (
 // +kubebuilder:rbac:groups=cognitoidentityprovider.services.k8s.aws,resources=userpools,verbs=get;list;watch;create;update;patch;delete
 // +kubebuilder:rbac:groups=cognitoidentityprovider.services.k8s.aws,resources=userpools/status,verbs=get;update;patch
 
-var lateInitializeFieldNames = []string{}
+var lateInitializeFieldNames = []string{"LambdaConfig", "PreTokenGeneration", "PreTokenGenerationConfig", "SNSRegion"}
 
 // resourceManager is responsible for providing a consistent way to perform
 // CRUD operations in a backend AWS service API for Book custom resources.
@@ -260,7 +260,27 @@ func (rm *resourceManager) lateInitializeFromReadOneOutput(
 	observed acktypes.AWSResource,
 	latest acktypes.AWSResource,
 ) acktypes.AWSResource {
-	return latest
+	observedKo := rm.concreteResource(observed).ko.DeepCopy()
+	latestKo := rm.concreteResource(latest).ko.DeepCopy()
+	if observedKo.Spec.LambdaConfig != nil && latestKo.Spec.LambdaConfig == nil {
+		latestKo.Spec.LambdaConfig = observedKo.Spec.LambdaConfig
+	}
+	if observedKo.Spec.LambdaConfig != nil && latestKo.Spec.LambdaConfig != nil {
+		if observedKo.Spec.LambdaConfig.PreTokenGeneration != nil && latestKo.Spec.LambdaConfig.PreTokenGeneration == nil {
+			latestKo.Spec.LambdaConfig.PreTokenGeneration = observedKo.Spec.LambdaConfig.PreTokenGeneration
+		}
+	}
+	if observedKo.Spec.LambdaConfig != nil && latestKo.Spec.LambdaConfig != nil {
+		if observedKo.Spec.LambdaConfig.PreTokenGenerationConfig != nil && latestKo.Spec.LambdaConfig.PreTokenGenerationConfig == nil {
+			latestKo.Spec.LambdaConfig.PreTokenGenerationConfig = observedKo.Spec.LambdaConfig.PreTokenGenerationConfig
+		}
+	}
+	if observedKo.Spec.SmsConfiguration != nil && latestKo.Spec.SmsConfiguration != nil {
+		if observedKo.Spec.SmsConfiguration.SNSRegion != nil && latestKo.Spec.SmsConfiguration.SNSRegion == nil {
+			latestKo.Spec.SmsConfiguration.SNSRegion = observedKo.Spec.SmsConfiguration.SNSRegion
+		}
+	}
+	return &resource{latestKo}
 }
 
 // IsSynced returns true if the resource is synced.

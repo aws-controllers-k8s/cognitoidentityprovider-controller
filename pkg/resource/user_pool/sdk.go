@@ -703,75 +703,6 @@ func (rm *resourceManager) sdkCreate(
 	} else {
 		ko.Status.ID = nil
 	}
-	if resp.UserPool.LambdaConfig != nil {
-		f16 := &svcapitypes.LambdaConfigType{}
-		if resp.UserPool.LambdaConfig.CreateAuthChallenge != nil {
-			f16.CreateAuthChallenge = resp.UserPool.LambdaConfig.CreateAuthChallenge
-		}
-		if resp.UserPool.LambdaConfig.CustomEmailSender != nil {
-			f16f1 := &svcapitypes.CustomEmailLambdaVersionConfigType{}
-			if resp.UserPool.LambdaConfig.CustomEmailSender.LambdaArn != nil {
-				f16f1.LambdaARN = resp.UserPool.LambdaConfig.CustomEmailSender.LambdaArn
-			}
-			if resp.UserPool.LambdaConfig.CustomEmailSender.LambdaVersion != "" {
-				f16f1.LambdaVersion = aws.String(string(resp.UserPool.LambdaConfig.CustomEmailSender.LambdaVersion))
-			}
-			f16.CustomEmailSender = f16f1
-		}
-		if resp.UserPool.LambdaConfig.CustomMessage != nil {
-			f16.CustomMessage = resp.UserPool.LambdaConfig.CustomMessage
-		}
-		if resp.UserPool.LambdaConfig.CustomSMSSender != nil {
-			f16f3 := &svcapitypes.CustomSMSLambdaVersionConfigType{}
-			if resp.UserPool.LambdaConfig.CustomSMSSender.LambdaArn != nil {
-				f16f3.LambdaARN = resp.UserPool.LambdaConfig.CustomSMSSender.LambdaArn
-			}
-			if resp.UserPool.LambdaConfig.CustomSMSSender.LambdaVersion != "" {
-				f16f3.LambdaVersion = aws.String(string(resp.UserPool.LambdaConfig.CustomSMSSender.LambdaVersion))
-			}
-			f16.CustomSMSSender = f16f3
-		}
-		if resp.UserPool.LambdaConfig.DefineAuthChallenge != nil {
-			f16.DefineAuthChallenge = resp.UserPool.LambdaConfig.DefineAuthChallenge
-		}
-		if resp.UserPool.LambdaConfig.KMSKeyID != nil {
-			f16.KMSKeyID = resp.UserPool.LambdaConfig.KMSKeyID
-		}
-		if resp.UserPool.LambdaConfig.PostAuthentication != nil {
-			f16.PostAuthentication = resp.UserPool.LambdaConfig.PostAuthentication
-		}
-		if resp.UserPool.LambdaConfig.PostConfirmation != nil {
-			f16.PostConfirmation = resp.UserPool.LambdaConfig.PostConfirmation
-		}
-		if resp.UserPool.LambdaConfig.PreAuthentication != nil {
-			f16.PreAuthentication = resp.UserPool.LambdaConfig.PreAuthentication
-		}
-		if resp.UserPool.LambdaConfig.PreSignUp != nil {
-			f16.PreSignUp = resp.UserPool.LambdaConfig.PreSignUp
-		}
-		if resp.UserPool.LambdaConfig.PreTokenGeneration != nil {
-			f16.PreTokenGeneration = resp.UserPool.LambdaConfig.PreTokenGeneration
-		}
-		if resp.UserPool.LambdaConfig.PreTokenGenerationConfig != nil {
-			f16f11 := &svcapitypes.PreTokenGenerationVersionConfigType{}
-			if resp.UserPool.LambdaConfig.PreTokenGenerationConfig.LambdaArn != nil {
-				f16f11.LambdaARN = resp.UserPool.LambdaConfig.PreTokenGenerationConfig.LambdaArn
-			}
-			if resp.UserPool.LambdaConfig.PreTokenGenerationConfig.LambdaVersion != "" {
-				f16f11.LambdaVersion = aws.String(string(resp.UserPool.LambdaConfig.PreTokenGenerationConfig.LambdaVersion))
-			}
-			f16.PreTokenGenerationConfig = f16f11
-		}
-		if resp.UserPool.LambdaConfig.UserMigration != nil {
-			f16.UserMigration = resp.UserPool.LambdaConfig.UserMigration
-		}
-		if resp.UserPool.LambdaConfig.VerifyAuthChallengeResponse != nil {
-			f16.VerifyAuthChallengeResponse = resp.UserPool.LambdaConfig.VerifyAuthChallengeResponse
-		}
-		ko.Spec.LambdaConfig = f16
-	} else {
-		ko.Spec.LambdaConfig = nil
-	}
 	if resp.UserPool.LastModifiedDate != nil {
 		ko.Status.LastModifiedDate = &metav1.Time{*resp.UserPool.LastModifiedDate}
 	} else {
@@ -856,21 +787,6 @@ func (rm *resourceManager) sdkCreate(
 		ko.Spec.SmsAuthenticationMessage = resp.UserPool.SmsAuthenticationMessage
 	} else {
 		ko.Spec.SmsAuthenticationMessage = nil
-	}
-	if resp.UserPool.SmsConfiguration != nil {
-		f23 := &svcapitypes.SmsConfigurationType{}
-		if resp.UserPool.SmsConfiguration.ExternalId != nil {
-			f23.ExternalID = resp.UserPool.SmsConfiguration.ExternalId
-		}
-		if resp.UserPool.SmsConfiguration.SnsCallerArn != nil {
-			f23.SNSCallerARN = resp.UserPool.SmsConfiguration.SnsCallerArn
-		}
-		if resp.UserPool.SmsConfiguration.SnsRegion != nil {
-			f23.SNSRegion = resp.UserPool.SmsConfiguration.SnsRegion
-		}
-		ko.Spec.SmsConfiguration = f23
-	} else {
-		ko.Spec.SmsConfiguration = nil
 	}
 	if resp.UserPool.SmsConfigurationFailure != nil {
 		ko.Status.SmsConfigurationFailure = resp.UserPool.SmsConfigurationFailure
