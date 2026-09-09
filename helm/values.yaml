@@ -4,7 +4,7 @@
 
 image:
   repository: public.ecr.aws/aws-controllers-k8s/cognitoidentityprovider-controller
-  tag: 1.7.0
+  tag: 1.6.0
   pullPolicy: IfNotPresent
   pullSecrets: []
 
@@ -153,6 +153,7 @@ reconcile:
     - ResourceServer
     - UserPool
     - UserPoolClient
+    - UserPoolClientSecret
 
 serviceAccount:
   # Specifies whether a service account should be created

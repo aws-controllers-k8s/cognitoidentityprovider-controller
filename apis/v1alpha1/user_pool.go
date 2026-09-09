@@ -27,16 +27,23 @@ type UserPoolSpec struct {
 	// they call ForgotPassword. You can use this setting to define a preferred
 	// method when a user has more than one method available. With this setting,
 	// SMS doesn't qualify for a valid password recovery mechanism if the user also
-	// has SMS multi-factor authentication (MFA) activated. In the absence of this
-	// setting, Amazon Cognito uses the legacy behavior to determine the recovery
-	// method where SMS is preferred through email.
+	// has SMS multi-factor authentication (MFA) activated. Email MFA is also disqualifying
+	// for account recovery with email. In the absence of this setting, Amazon Cognito
+	// uses the legacy behavior to determine the recovery method where SMS is preferred
+	// over email.
+	//
+	// As a best practice, configure both verified_email and verified_phone_number,
+	// with one having a higher priority than the other.
 	AccountRecoverySetting *AccountRecoverySettingType `json:"accountRecoverySetting,omitempty"`
-	// The configuration for AdminCreateUser requests.
+	// The configuration for administrative creation of users. Includes the template
+	// for the invitation message for new users, the duration of temporary passwords,
+	// and permitting self-service sign-up.
 	AdminCreateUserConfig *AdminCreateUserConfigType `json:"adminCreateUserConfig,omitempty"`
-	// Attributes supported as an alias for this user pool. Possible values: phone_number,
-	// email, or preferred_username.
+	// Attributes supported as an alias for this user pool. For more information
+	// about alias attributes, see Customizing sign-in attributes (https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-attributes.html#user-pool-settings-aliases).
 	AliasAttributes []*string `json:"aliasAttributes,omitempty"`
-	// The attributes to be auto-verified. Possible values: email, phone_number.
+	// The attributes that you want your user pool to automatically verify. For
+	// more information, see Verifying contact information at sign-up (https://docs.aws.amazon.com/cognito/latest/developerguide/signing-up-users-in-your-app.html#allowing-users-to-sign-up-and-confirm-themselves).
 	AutoVerifiedAttributes []*string `json:"autoVerifiedAttributes,omitempty"`
 	// When active, DeletionProtection prevents accidental deletion of your userpool.
 	// Before you can delete a user pool that you have protected against deletion,
@@ -47,56 +54,94 @@ type UserPoolSpec struct {
 	// user pool, send a new DeleteUserPool request after you deactivate deletion
 	// protection in an UpdateUserPool API request.
 	DeletionProtection *string `json:"deletionProtection,omitempty"`
-	// The device-remembering configuration for a user pool. A null value indicates
-	// that you have deactivated device remembering in your user pool.
+	// The device-remembering configuration for a user pool. Device remembering
+	// or device tracking is a "Remember me on this device" option for user pools
+	// that perform authentication with the device key of a trusted device in the
+	// back end, instead of a user-provided MFA code. For more information about
+	// device authentication, see Working with user devices in your user pool (https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-device-tracking.html).
+	// A null value indicates that you have deactivated device remembering in your
+	// user pool.
 	//
 	// When you provide a value for any DeviceConfiguration field, you activate
-	// the Amazon Cognito device-remembering feature.
+	// the Amazon Cognito device-remembering feature. For more information, see
+	// Working with devices (https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-device-tracking.html).
 	DeviceConfiguration *DeviceConfigurationType `json:"deviceConfiguration,omitempty"`
 	// The email configuration of your user pool. The email configuration type sets
 	// your preferred sending method, Amazon Web Services Region, and sender for
 	// messages from your user pool.
 	EmailConfiguration *EmailConfigurationType `json:"emailConfiguration,omitempty"`
-	// This parameter is no longer used. See VerificationMessageTemplateType (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_VerificationMessageTemplateType.html).
+	// This parameter is no longer used.
 	//
 	// Regex Pattern: `^[\p{L}\p{M}\p{S}\p{N}\p{P}\s*]*\{####\}[\p{L}\p{M}\p{S}\p{N}\p{P}\s*]*$`
 	EmailVerificationMessage *string `json:"emailVerificationMessage,omitempty"`
-	// This parameter is no longer used. See VerificationMessageTemplateType (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_VerificationMessageTemplateType.html).
+	// This parameter is no longer used.
 	//
 	// Regex Pattern: `^[\p{L}\p{M}\p{S}\p{N}\p{P}\s]+$`
 	EmailVerificationSubject *string `json:"emailVerificationSubject,omitempty"`
+	// The issuer configuration for the user pool. Specifies the issuer type for
+	// token generation.
+	IssuerConfiguration *IssuerConfigurationType `json:"issuerConfiguration,omitempty"`
+	// The key configuration for the user pool. Specifies the key type and KMS key
+	// ARN for encryption.
+	KeyConfiguration *KeyConfigurationType `json:"keyConfiguration,omitempty"`
 	// A collection of user pool Lambda triggers. Amazon Cognito invokes triggers
 	// at several possible stages of authentication operations. Triggers can modify
 	// the outcome of the operations that invoked them.
 	LambdaConfig *LambdaConfigType `json:"lambdaConfig,omitempty"`
-	// Specifies MFA configuration details.
+	// Sets multi-factor authentication (MFA) to be on, off, or optional. When ON,
+	// all users must set up MFA before they can sign in. When OPTIONAL, your application
+	// must make a client-side determination of whether a user wants to register
+	// an MFA device. For user pools with adaptive authentication with threat protection,
+	// choose OPTIONAL.
+	//
+	// When MfaConfiguration is OPTIONAL, managed login doesn't automatically prompt
+	// users to set up MFA. Amazon Cognito generates MFA prompts in API responses
+	// and in managed login for users who have chosen and configured a preferred
+	// MFA factor.
+	//
+	// The CreateUserPool operation supports only SMS MFA configuration. If you
+	// set MfaConfiguration to either of these values, include an SmsConfiguration
+	// in the same request:
+	//
+	//   - ON – Requires MFA for all users
+	//
+	//   - OPTIONAL – Makes MFA optional for each user
+	//
+	// If you omit SmsConfiguration, the operation returns an InvalidParameterException.
+	// To configure TOTP or email MFA, use the SetUserPoolMfaConfig (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_SetUserPoolMfaConfig.html)
+	// operation. You can also use SetUserPoolMfaConfig to add MFA factors later.
 	MFAConfiguration *string `json:"mfaConfiguration,omitempty"`
-	// A string used to name the user pool.
+	// A friendly name for your user pool.
 	//
 	// Regex Pattern: `^[\w\s+=,.@-]+$`
 	// +kubebuilder:validation:Required
 	Name *string `json:"name"`
-	// The policies associated with the new user pool.
+	// The password policy and sign-in policy in the user pool. The password policy
+	// sets options like password complexity requirements and password history.
+	// The sign-in policy sets the options available to applications in choice-based
+	// authentication (https://docs.aws.amazon.com/cognito/latest/developerguide/authentication-flows-selection-sdk.html#authentication-flows-selection-choice).
 	Policies *UserPoolPolicyType `json:"policies,omitempty"`
-	// An array of schema attributes for the new user pool. These attributes can
-	// be standard or custom attributes.
+	// An array of attributes for the new user pool. You can add custom attributes
+	// and modify the properties of default attributes. The specifications in this
+	// parameter set the required attributes in your user pool. For more information,
+	// see Working with user attributes (https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-attributes.html).
 	Schema []*SchemaAttributeType `json:"schema,omitempty"`
-	// A string representing the SMS authentication message.
+	// The contents of the SMS message that your user pool sends to users in SMS
+	// OTP and MFA authentication.
 	//
 	// Regex Pattern: `\{####\}`
 	SmsAuthenticationMessage *string `json:"smsAuthenticationMessage,omitempty"`
-	// The SMS configuration with the settings that your Amazon Cognito user pool
-	// must use to send an SMS message from your Amazon Web Services account through
+	// The settings for your Amazon Cognito user pool to send SMS messages with
 	// Amazon Simple Notification Service. To send SMS messages with Amazon SNS
 	// in the Amazon Web Services Region that you want, the Amazon Cognito user
 	// pool uses an Identity and Access Management (IAM) role in your Amazon Web
-	// Services account.
+	// Services account. For more information see SMS message settings (https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-sms-settings.html).
 	SmsConfiguration *SmsConfigurationType `json:"smsConfiguration,omitempty"`
-	// This parameter is no longer used. See VerificationMessageTemplateType (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_VerificationMessageTemplateType.html).
+	// This parameter is no longer used.
 	//
 	// Regex Pattern: `\{####\}`
 	SmsVerificationMessage *string `json:"smsVerificationMessage,omitempty"`
-	// The tags to assign to the user pool.
+	// An array of tag keys and values that you want to assign to the user pool.
 	Tags map[string]*string `json:"tags,omitempty"`
 	// The settings for updates to user attributes. These settings include the property
 	// AttributesRequireVerificationBeforeUpdate,a user-pool setting that tells
@@ -104,31 +149,35 @@ type UserPoolSpec struct {
 	// and phone number attributes. Formore information, see Verifying updates to
 	// email addresses and phone numbers (https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-email-phone-verification.html#user-pool-settings-verifications-verify-attribute-updates).
 	UserAttributeUpdateSettings *UserAttributeUpdateSettingsType `json:"userAttributeUpdateSettings,omitempty"`
-	// User pool add-ons. Contains settings for activation of advanced security
-	// features. To log user security information but take no action, set to AUDIT.
-	// To configure automatic security responses to risky traffic to your user pool,
-	// set to ENFORCED.
+	// Contains settings for activation of threat protection, including the operating
+	// mode and additional authentication types. To log user security information
+	// but take no action, set to AUDIT. To configure automatic security responses
+	// to potentially unwanted traffic to your user pool, set to ENFORCED.
 	//
 	// For more information, see Adding advanced security to a user pool (https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-settings-advanced-security.html).
+	// To activate this setting, your user pool must be on the Plus tier (https://docs.aws.amazon.com/cognito/latest/developerguide/feature-plans-features-plus.html).
 	UserPoolAddOns *UserPoolAddOnsType `json:"userPoolAddOns,omitempty"`
 	// The tag keys and values to assign to the user pool. A tag is a label that
 	// you can use to categorize and manage user pools in different ways, such as
 	// by purpose, owner, environment, or other criteria.
 	UserPoolTags map[string]*string `json:"userPoolTags,omitempty"`
 	// Specifies whether a user can use an email address or phone number as a username
-	// when they sign up.
+	// when they sign up. For more information, see Customizing sign-in attributes
+	// (https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-attributes.html#user-pool-settings-aliases).
 	UsernameAttributes []*string `json:"usernameAttributes,omitempty"`
-	// Case sensitivity on the username input for the selected sign-in option. When
-	// case sensitivity is set to False (case insensitive), users can sign in with
-	// any combination of capital and lowercase letters. For example, username,
-	// USERNAME, or UserName, or for email, email@example.com or EMaiL@eXamplE.Com.
-	// For most use cases, set case sensitivity to False (case insensitive) as a
-	// best practice. When usernames and email addresses are case insensitive, Amazon
-	// Cognito treats any variation in case as the same user, and prevents a case
-	// variation from being assigned to the same attribute for a different user.
+	// Sets the case sensitivity option for sign-in usernames. When CaseSensitive
+	// is false (case insensitive), users can sign in with any combination of capital
+	// and lowercase letters. For example, username, USERNAME, or UserName, or for
+	// email, email@example.com or EMaiL@eXamplE.Com. For most use cases, set case
+	// sensitivity to false as a best practice. When usernames and email addresses
+	// are case insensitive, Amazon Cognito treats any variation in case as the
+	// same user, and prevents a case variation from being assigned to the same
+	// attribute for a different user.
 	//
-	// This configuration is immutable after you set it. For more information, see
-	// UsernameConfigurationType (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UsernameConfigurationType.html).
+	// When CaseSensitive is true (case sensitive), Amazon Cognito interprets USERNAME
+	// and UserName as distinct users.
+	//
+	// This configuration is immutable after you set it.
 	UsernameConfiguration *UsernameConfigurationType `json:"usernameConfiguration,omitempty"`
 	// The template for the verification message that your user pool delivers to
 	// users who set an email address or phone number attribute.

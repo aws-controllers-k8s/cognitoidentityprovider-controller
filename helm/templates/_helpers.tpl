@@ -74,6 +74,7 @@ rules:
   resources:
   - resourceservers
   - userpoolclients
+  - userpoolclientsecrets
   - userpools
   verbs:
   - create
@@ -88,6 +89,7 @@ rules:
   resources:
   - resourceservers/status
   - userpoolclients/status
+  - userpoolclientsecrets/status
   - userpools/status
   verbs:
   - get

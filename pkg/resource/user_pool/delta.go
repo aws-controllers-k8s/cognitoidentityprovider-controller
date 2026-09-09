@@ -188,6 +188,35 @@ func newResourceDelta(
 			delta.Add("Spec.EmailVerificationSubject", a.ko.Spec.EmailVerificationSubject, b.ko.Spec.EmailVerificationSubject)
 		}
 	}
+	if ackcompare.HasNilDifference(a.ko.Spec.IssuerConfiguration, b.ko.Spec.IssuerConfiguration) {
+		delta.Add("Spec.IssuerConfiguration", a.ko.Spec.IssuerConfiguration, b.ko.Spec.IssuerConfiguration)
+	} else if a.ko.Spec.IssuerConfiguration != nil && b.ko.Spec.IssuerConfiguration != nil {
+		if ackcompare.HasNilDifference(a.ko.Spec.IssuerConfiguration.Type, b.ko.Spec.IssuerConfiguration.Type) {
+			delta.Add("Spec.IssuerConfiguration.Type", a.ko.Spec.IssuerConfiguration.Type, b.ko.Spec.IssuerConfiguration.Type)
+		} else if a.ko.Spec.IssuerConfiguration.Type != nil && b.ko.Spec.IssuerConfiguration.Type != nil {
+			if *a.ko.Spec.IssuerConfiguration.Type != *b.ko.Spec.IssuerConfiguration.Type {
+				delta.Add("Spec.IssuerConfiguration.Type", a.ko.Spec.IssuerConfiguration.Type, b.ko.Spec.IssuerConfiguration.Type)
+			}
+		}
+	}
+	if ackcompare.HasNilDifference(a.ko.Spec.KeyConfiguration, b.ko.Spec.KeyConfiguration) {
+		delta.Add("Spec.KeyConfiguration", a.ko.Spec.KeyConfiguration, b.ko.Spec.KeyConfiguration)
+	} else if a.ko.Spec.KeyConfiguration != nil && b.ko.Spec.KeyConfiguration != nil {
+		if ackcompare.HasNilDifference(a.ko.Spec.KeyConfiguration.KeyType, b.ko.Spec.KeyConfiguration.KeyType) {
+			delta.Add("Spec.KeyConfiguration.KeyType", a.ko.Spec.KeyConfiguration.KeyType, b.ko.Spec.KeyConfiguration.KeyType)
+		} else if a.ko.Spec.KeyConfiguration.KeyType != nil && b.ko.Spec.KeyConfiguration.KeyType != nil {
+			if *a.ko.Spec.KeyConfiguration.KeyType != *b.ko.Spec.KeyConfiguration.KeyType {
+				delta.Add("Spec.KeyConfiguration.KeyType", a.ko.Spec.KeyConfiguration.KeyType, b.ko.Spec.KeyConfiguration.KeyType)
+			}
+		}
+		if ackcompare.HasNilDifference(a.ko.Spec.KeyConfiguration.KMSKeyARN, b.ko.Spec.KeyConfiguration.KMSKeyARN) {
+			delta.Add("Spec.KeyConfiguration.KMSKeyARN", a.ko.Spec.KeyConfiguration.KMSKeyARN, b.ko.Spec.KeyConfiguration.KMSKeyARN)
+		} else if a.ko.Spec.KeyConfiguration.KMSKeyARN != nil && b.ko.Spec.KeyConfiguration.KMSKeyARN != nil {
+			if *a.ko.Spec.KeyConfiguration.KMSKeyARN != *b.ko.Spec.KeyConfiguration.KMSKeyARN {
+				delta.Add("Spec.KeyConfiguration.KMSKeyARN", a.ko.Spec.KeyConfiguration.KMSKeyARN, b.ko.Spec.KeyConfiguration.KMSKeyARN)
+			}
+		}
+	}
 	if ackcompare.HasNilDifference(a.ko.Spec.LambdaConfig, b.ko.Spec.LambdaConfig) {
 		delta.Add("Spec.LambdaConfig", a.ko.Spec.LambdaConfig, b.ko.Spec.LambdaConfig)
 	} else if a.ko.Spec.LambdaConfig != nil && b.ko.Spec.LambdaConfig != nil {
@@ -246,6 +275,24 @@ func newResourceDelta(
 		} else if a.ko.Spec.LambdaConfig.DefineAuthChallenge != nil && b.ko.Spec.LambdaConfig.DefineAuthChallenge != nil {
 			if *a.ko.Spec.LambdaConfig.DefineAuthChallenge != *b.ko.Spec.LambdaConfig.DefineAuthChallenge {
 				delta.Add("Spec.LambdaConfig.DefineAuthChallenge", a.ko.Spec.LambdaConfig.DefineAuthChallenge, b.ko.Spec.LambdaConfig.DefineAuthChallenge)
+			}
+		}
+		if ackcompare.HasNilDifference(a.ko.Spec.LambdaConfig.InboundFederation, b.ko.Spec.LambdaConfig.InboundFederation) {
+			delta.Add("Spec.LambdaConfig.InboundFederation", a.ko.Spec.LambdaConfig.InboundFederation, b.ko.Spec.LambdaConfig.InboundFederation)
+		} else if a.ko.Spec.LambdaConfig.InboundFederation != nil && b.ko.Spec.LambdaConfig.InboundFederation != nil {
+			if ackcompare.HasNilDifference(a.ko.Spec.LambdaConfig.InboundFederation.LambdaARN, b.ko.Spec.LambdaConfig.InboundFederation.LambdaARN) {
+				delta.Add("Spec.LambdaConfig.InboundFederation.LambdaARN", a.ko.Spec.LambdaConfig.InboundFederation.LambdaARN, b.ko.Spec.LambdaConfig.InboundFederation.LambdaARN)
+			} else if a.ko.Spec.LambdaConfig.InboundFederation.LambdaARN != nil && b.ko.Spec.LambdaConfig.InboundFederation.LambdaARN != nil {
+				if *a.ko.Spec.LambdaConfig.InboundFederation.LambdaARN != *b.ko.Spec.LambdaConfig.InboundFederation.LambdaARN {
+					delta.Add("Spec.LambdaConfig.InboundFederation.LambdaARN", a.ko.Spec.LambdaConfig.InboundFederation.LambdaARN, b.ko.Spec.LambdaConfig.InboundFederation.LambdaARN)
+				}
+			}
+			if ackcompare.HasNilDifference(a.ko.Spec.LambdaConfig.InboundFederation.LambdaVersion, b.ko.Spec.LambdaConfig.InboundFederation.LambdaVersion) {
+				delta.Add("Spec.LambdaConfig.InboundFederation.LambdaVersion", a.ko.Spec.LambdaConfig.InboundFederation.LambdaVersion, b.ko.Spec.LambdaConfig.InboundFederation.LambdaVersion)
+			} else if a.ko.Spec.LambdaConfig.InboundFederation.LambdaVersion != nil && b.ko.Spec.LambdaConfig.InboundFederation.LambdaVersion != nil {
+				if *a.ko.Spec.LambdaConfig.InboundFederation.LambdaVersion != *b.ko.Spec.LambdaConfig.InboundFederation.LambdaVersion {
+					delta.Add("Spec.LambdaConfig.InboundFederation.LambdaVersion", a.ko.Spec.LambdaConfig.InboundFederation.LambdaVersion, b.ko.Spec.LambdaConfig.InboundFederation.LambdaVersion)
+				}
 			}
 		}
 		if ackcompare.HasNilDifference(a.ko.Spec.LambdaConfig.KMSKeyID, b.ko.Spec.LambdaConfig.KMSKeyID) {
@@ -404,6 +451,59 @@ func newResourceDelta(
 	if ackcompare.HasNilDifference(a.ko.Spec.SmsConfiguration, b.ko.Spec.SmsConfiguration) {
 		delta.Add("Spec.SmsConfiguration", a.ko.Spec.SmsConfiguration, b.ko.Spec.SmsConfiguration)
 	} else if a.ko.Spec.SmsConfiguration != nil && b.ko.Spec.SmsConfiguration != nil {
+		if ackcompare.HasNilDifference(a.ko.Spec.SmsConfiguration.EumsSms, b.ko.Spec.SmsConfiguration.EumsSms) {
+			delta.Add("Spec.SmsConfiguration.EumsSms", a.ko.Spec.SmsConfiguration.EumsSms, b.ko.Spec.SmsConfiguration.EumsSms)
+		} else if a.ko.Spec.SmsConfiguration.EumsSms != nil && b.ko.Spec.SmsConfiguration.EumsSms != nil {
+			if ackcompare.HasNilDifference(a.ko.Spec.SmsConfiguration.EumsSms.CallerARN, b.ko.Spec.SmsConfiguration.EumsSms.CallerARN) {
+				delta.Add("Spec.SmsConfiguration.EumsSms.CallerARN", a.ko.Spec.SmsConfiguration.EumsSms.CallerARN, b.ko.Spec.SmsConfiguration.EumsSms.CallerARN)
+			} else if a.ko.Spec.SmsConfiguration.EumsSms.CallerARN != nil && b.ko.Spec.SmsConfiguration.EumsSms.CallerARN != nil {
+				if *a.ko.Spec.SmsConfiguration.EumsSms.CallerARN != *b.ko.Spec.SmsConfiguration.EumsSms.CallerARN {
+					delta.Add("Spec.SmsConfiguration.EumsSms.CallerARN", a.ko.Spec.SmsConfiguration.EumsSms.CallerARN, b.ko.Spec.SmsConfiguration.EumsSms.CallerARN)
+				}
+			}
+			if ackcompare.HasNilDifference(a.ko.Spec.SmsConfiguration.EumsSms.ConfigurationSetName, b.ko.Spec.SmsConfiguration.EumsSms.ConfigurationSetName) {
+				delta.Add("Spec.SmsConfiguration.EumsSms.ConfigurationSetName", a.ko.Spec.SmsConfiguration.EumsSms.ConfigurationSetName, b.ko.Spec.SmsConfiguration.EumsSms.ConfigurationSetName)
+			} else if a.ko.Spec.SmsConfiguration.EumsSms.ConfigurationSetName != nil && b.ko.Spec.SmsConfiguration.EumsSms.ConfigurationSetName != nil {
+				if *a.ko.Spec.SmsConfiguration.EumsSms.ConfigurationSetName != *b.ko.Spec.SmsConfiguration.EumsSms.ConfigurationSetName {
+					delta.Add("Spec.SmsConfiguration.EumsSms.ConfigurationSetName", a.ko.Spec.SmsConfiguration.EumsSms.ConfigurationSetName, b.ko.Spec.SmsConfiguration.EumsSms.ConfigurationSetName)
+				}
+			}
+			if ackcompare.HasNilDifference(a.ko.Spec.SmsConfiguration.EumsSms.ExternalID, b.ko.Spec.SmsConfiguration.EumsSms.ExternalID) {
+				delta.Add("Spec.SmsConfiguration.EumsSms.ExternalID", a.ko.Spec.SmsConfiguration.EumsSms.ExternalID, b.ko.Spec.SmsConfiguration.EumsSms.ExternalID)
+			} else if a.ko.Spec.SmsConfiguration.EumsSms.ExternalID != nil && b.ko.Spec.SmsConfiguration.EumsSms.ExternalID != nil {
+				if *a.ko.Spec.SmsConfiguration.EumsSms.ExternalID != *b.ko.Spec.SmsConfiguration.EumsSms.ExternalID {
+					delta.Add("Spec.SmsConfiguration.EumsSms.ExternalID", a.ko.Spec.SmsConfiguration.EumsSms.ExternalID, b.ko.Spec.SmsConfiguration.EumsSms.ExternalID)
+				}
+			}
+			if ackcompare.HasNilDifference(a.ko.Spec.SmsConfiguration.EumsSms.InEntityID, b.ko.Spec.SmsConfiguration.EumsSms.InEntityID) {
+				delta.Add("Spec.SmsConfiguration.EumsSms.InEntityID", a.ko.Spec.SmsConfiguration.EumsSms.InEntityID, b.ko.Spec.SmsConfiguration.EumsSms.InEntityID)
+			} else if a.ko.Spec.SmsConfiguration.EumsSms.InEntityID != nil && b.ko.Spec.SmsConfiguration.EumsSms.InEntityID != nil {
+				if *a.ko.Spec.SmsConfiguration.EumsSms.InEntityID != *b.ko.Spec.SmsConfiguration.EumsSms.InEntityID {
+					delta.Add("Spec.SmsConfiguration.EumsSms.InEntityID", a.ko.Spec.SmsConfiguration.EumsSms.InEntityID, b.ko.Spec.SmsConfiguration.EumsSms.InEntityID)
+				}
+			}
+			if ackcompare.HasNilDifference(a.ko.Spec.SmsConfiguration.EumsSms.InTemplateID, b.ko.Spec.SmsConfiguration.EumsSms.InTemplateID) {
+				delta.Add("Spec.SmsConfiguration.EumsSms.InTemplateID", a.ko.Spec.SmsConfiguration.EumsSms.InTemplateID, b.ko.Spec.SmsConfiguration.EumsSms.InTemplateID)
+			} else if a.ko.Spec.SmsConfiguration.EumsSms.InTemplateID != nil && b.ko.Spec.SmsConfiguration.EumsSms.InTemplateID != nil {
+				if *a.ko.Spec.SmsConfiguration.EumsSms.InTemplateID != *b.ko.Spec.SmsConfiguration.EumsSms.InTemplateID {
+					delta.Add("Spec.SmsConfiguration.EumsSms.InTemplateID", a.ko.Spec.SmsConfiguration.EumsSms.InTemplateID, b.ko.Spec.SmsConfiguration.EumsSms.InTemplateID)
+				}
+			}
+			if ackcompare.HasNilDifference(a.ko.Spec.SmsConfiguration.EumsSms.OriginationIdentity, b.ko.Spec.SmsConfiguration.EumsSms.OriginationIdentity) {
+				delta.Add("Spec.SmsConfiguration.EumsSms.OriginationIdentity", a.ko.Spec.SmsConfiguration.EumsSms.OriginationIdentity, b.ko.Spec.SmsConfiguration.EumsSms.OriginationIdentity)
+			} else if a.ko.Spec.SmsConfiguration.EumsSms.OriginationIdentity != nil && b.ko.Spec.SmsConfiguration.EumsSms.OriginationIdentity != nil {
+				if *a.ko.Spec.SmsConfiguration.EumsSms.OriginationIdentity != *b.ko.Spec.SmsConfiguration.EumsSms.OriginationIdentity {
+					delta.Add("Spec.SmsConfiguration.EumsSms.OriginationIdentity", a.ko.Spec.SmsConfiguration.EumsSms.OriginationIdentity, b.ko.Spec.SmsConfiguration.EumsSms.OriginationIdentity)
+				}
+			}
+			if ackcompare.HasNilDifference(a.ko.Spec.SmsConfiguration.EumsSms.Region, b.ko.Spec.SmsConfiguration.EumsSms.Region) {
+				delta.Add("Spec.SmsConfiguration.EumsSms.Region", a.ko.Spec.SmsConfiguration.EumsSms.Region, b.ko.Spec.SmsConfiguration.EumsSms.Region)
+			} else if a.ko.Spec.SmsConfiguration.EumsSms.Region != nil && b.ko.Spec.SmsConfiguration.EumsSms.Region != nil {
+				if *a.ko.Spec.SmsConfiguration.EumsSms.Region != *b.ko.Spec.SmsConfiguration.EumsSms.Region {
+					delta.Add("Spec.SmsConfiguration.EumsSms.Region", a.ko.Spec.SmsConfiguration.EumsSms.Region, b.ko.Spec.SmsConfiguration.EumsSms.Region)
+				}
+			}
+		}
 		if ackcompare.HasNilDifference(a.ko.Spec.SmsConfiguration.ExternalID, b.ko.Spec.SmsConfiguration.ExternalID) {
 			delta.Add("Spec.SmsConfiguration.ExternalID", a.ko.Spec.SmsConfiguration.ExternalID, b.ko.Spec.SmsConfiguration.ExternalID)
 		} else if a.ko.Spec.SmsConfiguration.ExternalID != nil && b.ko.Spec.SmsConfiguration.ExternalID != nil {

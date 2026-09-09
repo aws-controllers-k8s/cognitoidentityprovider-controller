@@ -29,10 +29,6 @@ var (
 // The settings for user message delivery in forgot-password operations. Contains
 // preference for email or SMS message delivery of password reset codes, or
 // for admin-only password reset.
-//
-// This data type is a request and response parameter of CreateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html)
-// and UpdateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html),
-// and a response parameter of DescribeUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPool.html).
 type AccountRecoverySettingType struct {
 	RecoveryMechanisms []*RecoveryOptionType `json:"recoveryMechanisms,omitempty"`
 }
@@ -40,10 +36,6 @@ type AccountRecoverySettingType struct {
 // The settings for administrator creation of users in a user pool. Contains
 // settings for allowing user sign-up, customizing invitation messages to new
 // users, and the amount of time before temporary passwords expire.
-//
-// This data type is a request and response parameter of CreateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html)
-// and UpdateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html),
-// and a response parameter of DescribeUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPool.html).
 type AdminCreateUserConfigType struct {
 	AllowAdminCreateUserOnly *bool `json:"allowAdminCreateUserOnly,omitempty"`
 	// The message template structure.
@@ -58,10 +50,6 @@ type AdminCreateUserConfigType struct {
 // Amazon Pinpoint isn't available in all Amazon Web Services Regions. For a
 // list of available Regions, see Amazon Cognito and Amazon Pinpoint Region
 // availability (https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-pinpoint-integration.html#cognito-user-pools-find-region-mappings).
-//
-// This data type is a request parameter of CreateUserPoolClient (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPoolClient.html)
-// and UpdateUserPoolClient (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPoolClient.html),
-// and a response parameter of DescribeUserPoolClient (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPoolClient.html).
 type AnalyticsConfigurationType struct {
 	ApplicationARN *string `json:"applicationARN,omitempty"`
 	ApplicationID  *string `json:"applicationID,omitempty"`
@@ -79,21 +67,13 @@ type AnalyticsConfigurationType struct {
 // information about Amazon Web Services Regions that can contain Amazon Pinpoint
 // resources for use with Amazon Cognito user pools, see Using Amazon Pinpoint
 // analytics with Amazon Cognito user pools (https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-pinpoint-integration.html).
-//
-// This data type is a request parameter of authentication operations like InitiateAuth
-// (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_InitiateAuth.html),
-// AdminInitiateAuth (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminInitiateAuth.html),
-// RespondToAuthChallenge (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_RespondToAuthChallenge.html),
-// and AdminRespondToAuthChallenge (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminRespondToAuthChallenge.html).
 type AnalyticsMetadataType struct {
 	AnalyticsEndpointID *string `json:"analyticsEndpointID,omitempty"`
 }
 
-// One authentication event that Amazon Cognito logged in a user pool with advanced
-// security features active. Contains user and device metadata and a risk assessment
+// One authentication event that Amazon Cognito logged in a user pool with threat
+// protection active. Contains user and device metadata and a risk assessment
 // from your user pool.
-//
-// This data type is a request parameter of AdminListUserAuthEvents (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminListUserAuthEvents.html).
 type AuthEventType struct {
 	CreationDate *metav1.Time `json:"creationDate,omitempty"`
 	EventID      *string      `json:"eventID,omitempty"`
@@ -101,43 +81,39 @@ type AuthEventType struct {
 
 // The object that your application receives after authentication. Contains
 // tokens and information for device authentication.
-//
-// This data type is a response parameter of authentication operations like
-// InitiateAuth (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_InitiateAuth.html),
-// AdminInitiateAuth (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminInitiateAuth.html),
-// RespondToAuthChallenge (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_RespondToAuthChallenge.html),
-// and AdminRespondToAuthChallenge (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminRespondToAuthChallenge.html).
 type AuthenticationResultType struct {
 	ExpiresIn *int64  `json:"expiresIn,omitempty"`
 	TokenType *string `json:"tokenType,omitempty"`
 }
 
+// The access token and its metadata from a machine-to-machine (M2M) client
+// credentials grant.
+type ClientAuthenticationResultType struct {
+	ExpiresIn *int64  `json:"expiresIn,omitempty"`
+	TokenType *string `json:"tokenType,omitempty"`
+}
+
+// Contains information about a client secret, including its unique identifier,
+// value, and creation timestamp.
+type ClientSecretDescriptorType struct {
+	ClientSecretCreateDate *metav1.Time `json:"clientSecretCreateDate,omitempty"`
+	ClientSecretID         *string      `json:"clientSecretID,omitempty"`
+}
+
 // Configuration for the CloudWatch log group destination of user pool detailed
-// activity logging, or of user activity log export with advanced security features.
-//
-// This data type is a request parameter of SetLogDeliveryConfiguration (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_SetLogDeliveryConfiguration.html)
-// and a response parameter of GetLogDeliveryConfiguration (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_GetLogDeliveryConfiguration.html).
+// activity logging, or of user activity log export with threat protection.
 type CloudWatchLogsConfigurationType struct {
 	LogGroupARN *string `json:"logGroupARN,omitempty"`
 }
 
 // The delivery details for an email or SMS message that Amazon Cognito sent
 // for authentication or verification.
-//
-// This data type is a response parameter of operations that send a code for
-// user profile confirmation, verification, or management, for example ForgotPassword
-// (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_ForgotPassword.html)
-// and SignUp (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_SignUp.html).
 type CodeDeliveryDetailsType struct {
 	Destination *string `json:"destination,omitempty"`
 }
 
 // Contextual user data used for evaluating the risk of an authentication event
 // by user pool threat protection.
-//
-// This data type is a request parameter of server-side authentication operations
-// like AdminInitiateAuth (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminInitiateAuth.html)
-// and AdminRespondToAuthChallenge (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminRespondToAuthChallenge.html).
 type ContextDataType struct {
 	EncodedData *string `json:"encodedData,omitempty"`
 	IPAddress   *string `json:"ipAddress,omitempty"`
@@ -145,57 +121,28 @@ type ContextDataType struct {
 	ServerPath  *string `json:"serverPath,omitempty"`
 }
 
-// The configuration for a hosted UI custom domain.
-//
-// This data type is a request parameter of CreateUserPoolDomain (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPoolDomain.html)
-// and UpdateUserPoolDomain (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPoolDomain.html).
+// The configuration for a custom domain, including the SSL certificate and
+// TLS security policy.
 type CustomDomainConfigType struct {
 	CertificateARN *string `json:"certificateARN,omitempty"`
 }
 
 // The properties of a custom email sender Lambda trigger.
-//
-// This data type is a request and response parameter of CreateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html)
-// and UpdateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html),
-// and a response parameter of DescribeUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPool.html).
 type CustomEmailLambdaVersionConfigType struct {
 	LambdaARN     *string `json:"lambdaARN,omitempty"`
 	LambdaVersion *string `json:"lambdaVersion,omitempty"`
 }
 
 // The properties of a custom SMS sender Lambda trigger.
-//
-// This data type is a request and response parameter of CreateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html)
-// and UpdateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html),
-// and a response parameter of DescribeUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPool.html).
 type CustomSMSLambdaVersionConfigType struct {
 	LambdaARN     *string `json:"lambdaARN,omitempty"`
 	LambdaVersion *string `json:"lambdaVersion,omitempty"`
 }
 
-// The device-remembering configuration for a user pool. A DescribeUserPool
-// (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPool.html)
-// request returns a null value for this object when the user pool isn't configured
-// to remember devices. When device remembering is active, you can remember
-// a user's device with a ConfirmDevice (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_ConfirmDevice.html)
-// API request. Additionally. when the property DeviceOnlyRememberedOnUserPrompt
-// is true, you must follow ConfirmDevice with an UpdateDeviceStatus (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateDeviceStatus.html)
-// API request that sets the user's device to remembered or not_remembered.
-//
-// To sign in with a remembered device, include DEVICE_KEY in the authentication
-// parameters in your user's InitiateAuth (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_InitiateAuth.html)
-// request. If your app doesn't include a DEVICE_KEY parameter, the response
-// (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_InitiateAuth.html#API_InitiateAuth_ResponseSyntax)
-// from Amazon Cognito includes newly-generated DEVICE_KEY and DEVICE_GROUP_KEY
-// values under NewDeviceMetadata. Store these values to use in future device-authentication
-// requests.
+// The device-remembering configuration for a user pool.
 //
 // When you provide a value for any property of DeviceConfiguration, you activate
 // the device remembering for the user pool.
-//
-// This data type is a request and response parameter of CreateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html)
-// and UpdateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html),
-// and a response parameter of DescribeUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPool.html).
 type DeviceConfigurationType struct {
 	ChallengeRequiredOnNewDevice     *bool `json:"challengeRequiredOnNewDevice,omitempty"`
 	DeviceOnlyRememberedOnUserPrompt *bool `json:"deviceOnlyRememberedOnUserPrompt,omitempty"`
@@ -204,8 +151,6 @@ type DeviceConfigurationType struct {
 // A Secure Remote Password (SRP) value that your application generates when
 // you register a user's device. For more information, see Getting a device
 // key (https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-device-tracking.html#user-pools-remembered-devices-getting-a-device-key).
-//
-// This data type is a request parameter of ConfirmDevice (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_ConfirmDevice.html).
 type DeviceSecretVerifierConfigType struct {
 	PasswordVerifier *string `json:"passwordVerifier,omitempty"`
 	Salt             *string `json:"salt,omitempty"`
@@ -214,10 +159,6 @@ type DeviceSecretVerifierConfigType struct {
 // Information about a user's device that they've registered for device SRP
 // authentication in your application. For more information, see Working with
 // user devices in your user pool (https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-device-tracking.html).
-//
-// The data type is a response parameter of AdminGetDevice (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminGetDevice.html),
-// AdminListDevices (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminListDevices.html),
-// and GetDevice (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_GetDevice.html).
 type DeviceType struct {
 	DeviceCreateDate            *metav1.Time `json:"deviceCreateDate,omitempty"`
 	DeviceLastAuthenticatedDate *metav1.Time `json:"deviceLastAuthenticatedDate,omitempty"`
@@ -226,8 +167,6 @@ type DeviceType struct {
 
 // A container for information about the user pool domain associated with the
 // hosted UI and OAuth endpoints.
-//
-// This data type is a response parameter of DescribeUserPoolDomain (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPoolDomain.html).
 type DomainDescriptionType struct {
 	CloudFrontDistribution *string `json:"cloudFrontDistribution,omitempty"`
 	Domain                 *string `json:"domain,omitempty"`
@@ -242,13 +181,6 @@ type DomainDescriptionType struct {
 // in the Amazon Web Services Region where you created your user pool, and in
 // alternate Regions in some cases. For more information on the supported Regions,
 // see Email settings for Amazon Cognito user pools (https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-email.html).
-//
-// This data type is a request parameter of CreateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html),
-// UpdateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html),
-// and SetUserPoolMfaConfig (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_SetUserPoolMfaConfig.html),
-// and a response parameter of CreateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html),
-// UpdateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html),
-// and GetUserPoolMfaConfig (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_GetUserPoolMfaConfig.html).
 type EmailConfigurationType struct {
 	ConfigurationSet    *string `json:"configurationSet,omitempty"`
 	EmailSendingAccount *string `json:"emailSendingAccount,omitempty"`
@@ -259,21 +191,30 @@ type EmailConfigurationType struct {
 
 // User preferences for multi-factor authentication with email messages. Activates
 // or deactivates email MFA and sets it as the preferred MFA method when multiple
-// methods are available. To activate this setting, advanced security features
-// (https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-settings-advanced-security.html)
-// must be active in your user pool.
-//
-// This data type is a request parameter of SetUserMFAPreference (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_SetUserMFAPreference.html)
-// and AdminSetUserMFAPreference (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminSetUserMFAPreference.html).
+// methods are available. To activate this setting, your user pool must be in
+// the Essentials tier (https://docs.aws.amazon.com/cognito/latest/developerguide/feature-plans-features-essentials.html)
+// or higher.
 type EmailMFASettingsType struct {
 	Enabled      *bool `json:"enabled,omitempty"`
 	PreferredMFA *bool `json:"preferredMFA,omitempty"`
 }
 
+// The configuration that Amazon Cognito uses to send SMS messages through Amazon
+// Web Services End User Messaging SMS. Provide this structure in the EumsSms
+// member of SmsConfigurationType to use Amazon Web Services End User Messaging
+// SMS instead of Amazon SNS.
+type EumsSmsConfigurationType struct {
+	CallerARN            *string `json:"callerARN,omitempty"`
+	ConfigurationSetName *string `json:"configurationSetName,omitempty"`
+	ExternalID           *string `json:"externalID,omitempty"`
+	InEntityID           *string `json:"inEntityID,omitempty"`
+	InTemplateID         *string `json:"inTemplateID,omitempty"`
+	OriginationIdentity  *string `json:"originationIdentity,omitempty"`
+	Region               *string `json:"region,omitempty"`
+}
+
 // The context data that your application submitted in an authentication request
-// with advanced security features, as displayed in an AdminListUserAuthEvents
-// (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminListUserAuthEvents.html)
-// response.
+// with threat protection, as displayed in an AdminListUserAuthEvents response.
 type EventContextDataType struct {
 	City       *string `json:"city,omitempty"`
 	Country    *string `json:"country,omitempty"`
@@ -282,16 +223,14 @@ type EventContextDataType struct {
 	Timezone   *string `json:"timezone,omitempty"`
 }
 
-// The feedback that your application submitted to an advanced security features
-// event log, as displayed in an AdminListUserAuthEvents (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminListUserAuthEvents.html)
-// response.
+// The feedback that your application submitted to a threat protection event
+// log, as displayed in an AdminListUserAuthEvents response.
 type EventFeedbackType struct {
 	FeedbackDate *metav1.Time `json:"feedbackDate,omitempty"`
 	Provider     *string      `json:"provider,omitempty"`
 }
 
 // The risk evaluation by adaptive authentication, as displayed in an AdminListUserAuthEvents
-// (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminListUserAuthEvents.html)
 // response. Contains evaluations of compromised-credentials detection and assessed
 // risk level and action taken by adaptive authentication.
 type EventRiskType struct {
@@ -299,7 +238,7 @@ type EventRiskType struct {
 }
 
 // Configuration for the Amazon Data Firehose stream destination of user activity
-// log export with advanced security features.
+// log export with threat protection.
 type FirehoseConfigurationType struct {
 	StreamARN *string `json:"streamARN,omitempty"`
 }
@@ -308,12 +247,6 @@ type FirehoseConfigurationType struct {
 // to IAM role decisions with identity pools. Identity pools can make decisions
 // about the IAM role to assign based on groups: users get credentials for the
 // role associated with their highest-priority group.
-//
-// This data type is a response parameter of AdminListGroupsForUser (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminListGroupsForUser.html),
-// CreateGroup (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateGroup.html),
-// GetGroup (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_GetGroup.html),
-// ListGroups (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_ListGroups.html),
-// and UpdateGroup (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateGroup.html).
 type GroupType struct {
 	CreationDate     *metav1.Time `json:"creationDate,omitempty"`
 	LastModifiedDate *metav1.Time `json:"lastModifiedDate,omitempty"`
@@ -322,10 +255,6 @@ type GroupType struct {
 }
 
 // The HTTP header in the ContextData parameter.
-//
-// This data type is a request parameter of server-side authentication operations
-// like AdminInitiateAuth (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminInitiateAuth.html)
-// and AdminRespondToAuthChallenge (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminRespondToAuthChallenge.html).
 type HTTPHeader struct {
 	HeaderName  *string `json:"headerName,omitempty"`
 	HeaderValue *string `json:"headerValue,omitempty"`
@@ -334,11 +263,6 @@ type HTTPHeader struct {
 // A user pool identity provider (IdP). Contains information about a third-party
 // IdP to a user pool, the attributes that it populates to user profiles, and
 // the trust relationship between the IdP and your user pool.
-//
-// This data type is a response parameter of CreateIdentityProvider (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateIdentityProvider.html),
-// DescribeIdentityProvider (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeIdentityProvider.html),
-// GetIdentityProviderByIdentifier (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_GetIdentityProviderByIdentifier.html),
-// and UpdateIdentityProvider (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateIdentityProvider.html).
 type IdentityProviderType struct {
 	CreationDate     *metav1.Time `json:"creationDate,omitempty"`
 	LastModifiedDate *metav1.Time `json:"lastModifiedDate,omitempty"`
@@ -346,58 +270,63 @@ type IdentityProviderType struct {
 	UserPoolID       *string      `json:"userPoolID,omitempty"`
 }
 
+// The properties of an inbound federation Lambda trigger.
+type InboundFederationLambdaType struct {
+	LambdaARN     *string `json:"lambdaARN,omitempty"`
+	LambdaVersion *string `json:"lambdaVersion,omitempty"`
+}
+
+// Specifies the issuer configuration for a user pool. Contains settings that
+// determine how tokens are issued and validated.
+type IssuerConfigurationType struct {
+	Type *string `json:"type_,omitempty"`
+}
+
+// Specifies the key configuration for a user pool. Contains settings for encryption
+// keys used to secure user pool data.
+type KeyConfigurationType struct {
+	KeyType   *string `json:"keyType,omitempty"`
+	KMSKeyARN *string `json:"kmsKeyARN,omitempty"`
+}
+
 // A collection of user pool Lambda triggers. Amazon Cognito invokes triggers
 // at several possible stages of user pool operations. Triggers can modify the
 // outcome of the operations that invoked them.
-//
-// This data type is a request and response parameter of CreateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html)
-// and UpdateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html),
-// and a response parameter of DescribeUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPool.html).
 type LambdaConfigType struct {
 	CreateAuthChallenge *string `json:"createAuthChallenge,omitempty"`
 	// The properties of a custom email sender Lambda trigger.
-	//
-	// This data type is a request and response parameter of CreateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html)
-	// and UpdateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html),
-	// and a response parameter of DescribeUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPool.html).
 	CustomEmailSender *CustomEmailLambdaVersionConfigType `json:"customEmailSender,omitempty"`
 	CustomMessage     *string                             `json:"customMessage,omitempty"`
 	// The properties of a custom SMS sender Lambda trigger.
-	//
-	// This data type is a request and response parameter of CreateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html)
-	// and UpdateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html),
-	// and a response parameter of DescribeUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPool.html).
 	CustomSMSSender     *CustomSMSLambdaVersionConfigType `json:"customSMSSender,omitempty"`
 	DefineAuthChallenge *string                           `json:"defineAuthChallenge,omitempty"`
-	KMSKeyID            *string                           `json:"kmsKeyID,omitempty"`
-	PostAuthentication  *string                           `json:"postAuthentication,omitempty"`
-	PostConfirmation    *string                           `json:"postConfirmation,omitempty"`
-	PreAuthentication   *string                           `json:"preAuthentication,omitempty"`
-	PreSignUp           *string                           `json:"preSignUp,omitempty"`
-	PreTokenGeneration  *string                           `json:"preTokenGeneration,omitempty"`
+	// The properties of an inbound federation Lambda trigger.
+	InboundFederation  *InboundFederationLambdaType `json:"inboundFederation,omitempty"`
+	KMSKeyID           *string                      `json:"kmsKeyID,omitempty"`
+	PostAuthentication *string                      `json:"postAuthentication,omitempty"`
+	PostConfirmation   *string                      `json:"postConfirmation,omitempty"`
+	PreAuthentication  *string                      `json:"preAuthentication,omitempty"`
+	PreSignUp          *string                      `json:"preSignUp,omitempty"`
+	PreTokenGeneration *string                      `json:"preTokenGeneration,omitempty"`
 	// The properties of a pre token generation Lambda trigger.
-	//
-	// This data type is a request and response parameter of CreateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html)
-	// and UpdateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html),
-	// and a response parameter of DescribeUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPool.html).
 	PreTokenGenerationConfig    *PreTokenGenerationVersionConfigType `json:"preTokenGenerationConfig,omitempty"`
 	UserMigration               *string                              `json:"userMigration,omitempty"`
 	VerifyAuthChallengeResponse *string                              `json:"verifyAuthChallengeResponse,omitempty"`
 }
 
+// The limit definition and current limit values for a provisioned limit.
+type LimitType struct {
+	FreeLimitValue        *int64 `json:"freeLimitValue,omitempty"`
+	ProvisionedLimitValue *int64 `json:"provisionedLimitValue,omitempty"`
+}
+
 // The logging parameters of a user pool, as returned in the response to a GetLogDeliveryConfiguration
-// (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_GetLogDeliveryConfiguration.html)
 // request.
 type LogDeliveryConfigurationType struct {
 	UserPoolID *string `json:"userPoolID,omitempty"`
 }
 
 // A managed login branding style that's assigned to a user pool app client.
-//
-// This data type is a response parameter of CreateManagedLoginBranding (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateManagedLoginBranding.html),
-// UpdateManagedLoginBranding (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateManagedLoginBranding.html),
-// DescribeManagedLoginBranding (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeManagedLoginBranding.html),
-// and DescribeManagedLoginBrandingByClient (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeManagedLoginBrandingByClient.html).
 type ManagedLoginBrandingType struct {
 	CreationDate             *metav1.Time `json:"creationDate,omitempty"`
 	LastModifiedDate         *metav1.Time `json:"lastModifiedDate,omitempty"`
@@ -417,22 +346,13 @@ type MessageTemplateType struct {
 // device. Amazon Cognito presents a new device key that you can use to set
 // up device authentication (https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-device-tracking.html)
 // in a "Remember me on this device" authentication model.
-//
-// This data type is a response parameter of authentication operations like
-// InitiateAuth (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_InitiateAuth.html),
-// AdminInitiateAuth (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminInitiateAuth.html),
-// RespondToAuthChallenge (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_RespondToAuthChallenge.html),
-// and AdminRespondToAuthChallenge (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminRespondToAuthChallenge.html).
 type NewDeviceMetadataType struct {
 	DeviceGroupKey *string `json:"deviceGroupKey,omitempty"`
 }
 
-// The configuration for Amazon SES email messages that advanced security features
-// sends to a user when your adaptive authentication automated response has
-// a Notify action.
-//
-// This data type is a request parameter of SetRiskConfiguration (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_SetRiskConfiguration.html)
-// and a response parameter of DescribeRiskConfiguration (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeRiskConfiguration.html).
+// The configuration for Amazon SES email messages that threat protection sends
+// to a user when your adaptive authentication automated response has a Notify
+// action.
 type NotifyConfigurationType struct {
 	From      *string `json:"from,omitempty"`
 	ReplyTo   *string `json:"replyTo,omitempty"`
@@ -441,13 +361,6 @@ type NotifyConfigurationType struct {
 
 // The minimum and maximum values of an attribute that is of the number type,
 // for example custom:age.
-//
-// This data type is part of SchemaAttributeType (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_SchemaAttributeType.html).
-// It defines the length constraints on number-type attributes that you configure
-// in CreateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html)
-// and UpdateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html),
-// and displays the length constraints of all number-type attributes in the
-// response to DescribeUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPool.html)
 type NumberAttributeConstraintsType struct {
 	MaxValue *string `json:"maxValue,omitempty"`
 	MinValue *string `json:"minValue,omitempty"`
@@ -455,10 +368,6 @@ type NumberAttributeConstraintsType struct {
 
 // The password policy settings for a user pool, including complexity, history,
 // and length requirements.
-//
-// This data type is a request and response parameter of CreateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html)
-// and UpdateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html),
-// and a response parameter of DescribeUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPool.html).
 type PasswordPolicyType struct {
 	MinimumLength                 *int64 `json:"minimumLength,omitempty"`
 	RequireLowercase              *bool  `json:"requireLowercase,omitempty"`
@@ -469,18 +378,12 @@ type PasswordPolicyType struct {
 }
 
 // The properties of a pre token generation Lambda trigger.
-//
-// This data type is a request and response parameter of CreateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html)
-// and UpdateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html),
-// and a response parameter of DescribeUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPool.html).
 type PreTokenGenerationVersionConfigType struct {
 	LambdaARN     *string `json:"lambdaARN,omitempty"`
 	LambdaVersion *string `json:"lambdaVersion,omitempty"`
 }
 
 // The details of a user pool identity provider (IdP), including name and type.
-//
-// This data type is a response parameter of ListIdentityProviders (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_ListIdentityProviders.html).
 type ProviderDescription struct {
 	CreationDate     *metav1.Time `json:"creationDate,omitempty"`
 	LastModifiedDate *metav1.Time `json:"lastModifiedDate,omitempty"`
@@ -489,9 +392,6 @@ type ProviderDescription struct {
 
 // The characteristics of a source or destination user for linking a federated
 // user profile to a local user profile.
-//
-// This data type is a request parameter of AdminLinkProviderForUser (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminLinkProviderForUser.html)
-// and AdminDisableProviderForUser (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminDisableProviderForUser.html).
 type ProviderUserIdentifierType struct {
 	ProviderAttributeName  *string `json:"providerAttributeName,omitempty"`
 	ProviderAttributeValue *string `json:"providerAttributeValue,omitempty"`
@@ -507,21 +407,23 @@ type ProviderUserIdentifierType struct {
 // verified email address but falls back to an SMS message if the user has a
 // verified phone number. The admin_only option prevents self-service account
 // recovery.
-//
-// This data type is a request and response parameter of CreateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html)
-// and UpdateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html),
-// and a response parameter of DescribeUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPool.html).
 type RecoveryOptionType struct {
 	Name     *string `json:"name,omitempty"`
 	Priority *int64  `json:"priority,omitempty"`
 }
 
+// The configuration of your app client for refresh token rotation. When enabled,
+// your app client issues new ID, access, and refresh tokens when users renew
+// their sessions with refresh tokens. When disabled, token refresh issues only
+// ID and access tokens.
+type RefreshTokenRotationType struct {
+	Feature                 *string `json:"feature,omitempty"`
+	RetryGracePeriodSeconds *int64  `json:"retryGracePeriodSeconds,omitempty"`
+}
+
 // One custom scope associated with a user pool resource server. This data type
 // is a member of ResourceServerScopeType. For more information, see Scopes,
 // M2M, and API authorization with resource servers (https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-define-resource-servers.html).
-//
-// This data type is a request parameter of CreateResourceServer (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateResourceServer.html)
-// and a response parameter of DescribeResourceServer (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeResourceServer.html).
 type ResourceServerScopeType struct {
 	ScopeDescription *string `json:"scopeDescription,omitempty"`
 	ScopeName        *string `json:"scopeName,omitempty"`
@@ -529,9 +431,6 @@ type ResourceServerScopeType struct {
 
 // The details of a resource server configuration and associated custom scopes
 // in a user pool.
-//
-// This data type is a request parameter of CreateResourceServer (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateResourceServer.html)
-// and a response parameter of DescribeResourceServer (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeResourceServer.html).
 type ResourceServerType struct {
 	Identifier *string                    `json:"identifier,omitempty"`
 	Name       *string                    `json:"name,omitempty"`
@@ -539,11 +438,8 @@ type ResourceServerType struct {
 	UserPoolID *string                    `json:"userPoolID,omitempty"`
 }
 
-// The settings of risk configuration for threat protection with advanced security
-// features in a user pool.
-//
-// This data type is a response parameter of DescribeRiskConfiguration (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeRiskConfiguration.html)
-// and SetRiskConfiguration (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_SetRiskConfiguration.html).
+// The settings of risk configuration for threat protection with threat protection
+// in a user pool.
 type RiskConfigurationType struct {
 	ClientID         *string      `json:"clientID,omitempty"`
 	LastModifiedDate *metav1.Time `json:"lastModifiedDate,omitempty"`
@@ -554,9 +450,6 @@ type RiskConfigurationType struct {
 // Turns SMS MFA on and off, and can set SMS as preferred when other MFA options
 // are available. You can't turn off SMS MFA for any of your users when MFA
 // is required in your user pool; you can only set the type that your user prefers.
-//
-// This data type is a request parameter of SetUserMFAPreference (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_SetUserMFAPreference.html)
-// and AdminSetUserMFAPreference (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminSetUserMFAPreference.html).
 type SMSMFASettingsType struct {
 	Enabled      *bool `json:"enabled,omitempty"`
 	PreferredMFA *bool `json:"preferredMFA,omitempty"`
@@ -571,10 +464,6 @@ type SMSMFASettingsType struct {
 // read-only to all app clients. You can create and update developer-only attributes
 // only with IAM-authenticated API operations. Use app client read/write permissions
 // instead.
-//
-// This data type is a request and response parameter of CreateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html)
-// and UpdateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html),
-// and a response parameter of DescribeUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPool.html).
 type SchemaAttributeType struct {
 	AttributeDataType      *string `json:"attributeDataType,omitempty"`
 	DeveloperOnlyAttribute *bool   `json:"developerOnlyAttribute,omitempty"`
@@ -582,24 +471,10 @@ type SchemaAttributeType struct {
 	Name                   *string `json:"name,omitempty"`
 	// The minimum and maximum values of an attribute that is of the number type,
 	// for example custom:age.
-	//
-	// This data type is part of SchemaAttributeType (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_SchemaAttributeType.html).
-	// It defines the length constraints on number-type attributes that you configure
-	// in CreateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html)
-	// and UpdateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html),
-	// and displays the length constraints of all number-type attributes in the
-	// response to DescribeUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPool.html)
 	NumberAttributeConstraints *NumberAttributeConstraintsType `json:"numberAttributeConstraints,omitempty"`
 	Required                   *bool                           `json:"required,omitempty"`
 	// The minimum and maximum length values of an attribute that is of the string
 	// type, for example custom:department.
-	//
-	// This data type is part of SchemaAttributeType (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_SchemaAttributeType.html).
-	// It defines the length constraints on string-type attributes that you configure
-	// in CreateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html)
-	// and UpdateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html),
-	// and displays the length constraints of all string-type attributes in the
-	// response to DescribeUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPool.html)
 	StringAttributeConstraints *StringAttributeConstraintsType `json:"stringAttributeConstraints,omitempty"`
 }
 
@@ -607,45 +482,30 @@ type SchemaAttributeType struct {
 // Service. To send SMS messages with Amazon SNS in the Amazon Web Services
 // Region that you want, the Amazon Cognito user pool uses an Identity and Access
 // Management (IAM) role in your Amazon Web Services account.
-//
-// This data type is a request parameter of CreateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html),
-// UpdateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html),
-// and SetUserPoolMfaConfig (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_SetUserPoolMfaConfig.html),
-// and a response parameter of CreateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html),
-// UpdateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html),
-// and GetUserPoolMfaConfig (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_GetUserPoolMfaConfig.html).
 type SmsConfigurationType struct {
-	ExternalID   *string `json:"externalID,omitempty"`
-	SNSCallerARN *string `json:"snsCallerARN,omitempty"`
-	SNSRegion    *string `json:"snsRegion,omitempty"`
+	// The configuration that Amazon Cognito uses to send SMS messages through Amazon
+	// Web Services End User Messaging SMS. Provide this structure in the EumsSms
+	// member of SmsConfigurationType to use Amazon Web Services End User Messaging
+	// SMS instead of Amazon SNS.
+	EumsSms      *EumsSmsConfigurationType `json:"eumsSms,omitempty"`
+	ExternalID   *string                   `json:"externalID,omitempty"`
+	SNSCallerARN *string                   `json:"snsCallerARN,omitempty"`
+	SNSRegion    *string                   `json:"snsRegion,omitempty"`
 }
 
 // The configuration of multi-factor authentication (MFA) with SMS messages
 // in a user pool.
-//
-// This data type is a request parameter of SetUserPoolMfaConfig (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_SetUserPoolMfaConfig.html)
-// and a response parameter of GetUserPoolMfaConfig (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_GetUserPoolMfaConfig.html).
 type SmsMFAConfigType struct {
 	SmsAuthenticationMessage *string `json:"smsAuthenticationMessage,omitempty"`
 	// User pool configuration for delivery of SMS messages with Amazon Simple Notification
 	// Service. To send SMS messages with Amazon SNS in the Amazon Web Services
 	// Region that you want, the Amazon Cognito user pool uses an Identity and Access
 	// Management (IAM) role in your Amazon Web Services account.
-	//
-	// This data type is a request parameter of CreateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html),
-	// UpdateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html),
-	// and SetUserPoolMfaConfig (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_SetUserPoolMfaConfig.html),
-	// and a response parameter of CreateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html),
-	// UpdateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html),
-	// and GetUserPoolMfaConfig (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_GetUserPoolMfaConfig.html).
 	SmsConfiguration *SmsConfigurationType `json:"smsConfiguration,omitempty"`
 }
 
 // Settings for time-based one-time password (TOTP) multi-factor authentication
 // (MFA) in a user pool. Enables and disables availability of this feature.
-//
-// This data type is a request parameter of SetUserPoolMfaConfig (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_SetUserPoolMfaConfig.html)
-// and a response parameter of GetUserPoolMfaConfig (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_GetUserPoolMfaConfig.html).
 type SoftwareTokenMFAConfigType struct {
 	Enabled *bool `json:"enabled,omitempty"`
 }
@@ -655,9 +515,6 @@ type SoftwareTokenMFAConfigType struct {
 // when other MFA options are available. You can't turn off TOTP MFA for any
 // of your users when MFA is required in your user pool; you can only set the
 // type that your user prefers.
-//
-// This data type is a request parameter of SetUserMFAPreference (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_SetUserMFAPreference.html)
-// and AdminSetUserMFAPreference (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminSetUserMFAPreference.html).
 type SoftwareTokenMFASettingsType struct {
 	Enabled      *bool `json:"enabled,omitempty"`
 	PreferredMFA *bool `json:"preferredMFA,omitempty"`
@@ -665,25 +522,30 @@ type SoftwareTokenMFASettingsType struct {
 
 // The minimum and maximum length values of an attribute that is of the string
 // type, for example custom:department.
-//
-// This data type is part of SchemaAttributeType (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_SchemaAttributeType.html).
-// It defines the length constraints on string-type attributes that you configure
-// in CreateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html)
-// and UpdateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html),
-// and displays the length constraints of all string-type attributes in the
-// response to DescribeUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPool.html)
 type StringAttributeConstraintsType struct {
 	MaxLength *string `json:"maxLength,omitempty"`
 	MinLength *string `json:"minLength,omitempty"`
 }
 
+// The details of a set of terms documents. For more information, see Terms
+// documents (https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-managed-login.html#managed-login-terms-documents).
+type TermsDescriptionType struct {
+	CreationDate     *metav1.Time `json:"creationDate,omitempty"`
+	LastModifiedDate *metav1.Time `json:"lastModifiedDate,omitempty"`
+}
+
+// The details of a set of terms documents. For more information, see Terms
+// documents (https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-managed-login.html#managed-login-terms-documents).
+type TermsType struct {
+	ClientID         *string      `json:"clientID,omitempty"`
+	CreationDate     *metav1.Time `json:"creationDate,omitempty"`
+	LastModifiedDate *metav1.Time `json:"lastModifiedDate,omitempty"`
+	UserPoolID       *string      `json:"userPoolID,omitempty"`
+}
+
 // The time units that, with IdTokenValidity, AccessTokenValidity, and RefreshTokenValidity,
 // set and display the duration of ID, access, and refresh tokens for an app
 // client. You can assign a separate token validity unit to each type of token.
-//
-// This data type is a request parameter of CreateUserPoolClient (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPoolClient.html)
-// and UpdateUserPoolClient (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPoolClient.html),
-// and a response parameter of DescribeUserPoolClient (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPoolClient.html).
 type TokenValidityUnitsType struct {
 	AccessToken  *string `json:"accessToken,omitempty"`
 	IDToken      *string `json:"idToken,omitempty"`
@@ -692,8 +554,6 @@ type TokenValidityUnitsType struct {
 
 // A container for the UI customization information for the hosted UI in a user
 // pool.
-//
-// This data type is a response parameter of GetUICustomization (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPoolClient.html).
 type UICustomizationType struct {
 	ClientID         *string      `json:"clientID,omitempty"`
 	CreationDate     *metav1.Time `json:"creationDate,omitempty"`
@@ -706,21 +566,13 @@ type UICustomizationType struct {
 // Amazon Cognito how to handle changes to the value of your users' email address
 // and phone number attributes. Formore information, see Verifying updates to
 // email addresses and phone numbers (https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-email-phone-verification.html#user-pool-settings-verifications-verify-attribute-updates).
-//
-// This data type is a request and response parameter of CreateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html)
-// and UpdateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html),
-// and a response parameter of DescribeUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPool.html).
 type UserAttributeUpdateSettingsType struct {
 	AttributesRequireVerificationBeforeUpdate []*string `json:"attributesRequireVerificationBeforeUpdate,omitempty"`
 }
 
 // Contextual data, such as the user's device fingerprint, IP address, or location,
-// used for evaluating the risk of an unexpected event by Amazon Cognito advanced
-// security.
-//
-// This data type is a request parameter of public-client authentication operations
-// like InitiateAuth (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_InitiateAuth.html)
-// and RespondToAuthChallenge (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_RespondToAuthChallenge.html).
+// used for evaluating the risk of an unexpected event by Amazon Cognito threat
+// protection.
 type UserContextDataType struct {
 	EncodedData *string `json:"encodedData,omitempty"`
 	IPAddress   *string `json:"ipAddress,omitempty"`
@@ -729,12 +581,6 @@ type UserContextDataType struct {
 // A user import job in a user pool. Describes the status of user import with
 // a CSV file. For more information, see Importing users into user pools from
 // a CSV file (https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-using-import-tool.html).
-//
-// This data type is a request parameter of CreateUserImportJob (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserImportJob.html),
-// DescribeUserImportJob (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserImportJob.html),
-// ListUserImportJobs (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_ListUserImportJobs.html),
-// StartUserImportJob (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_StartUserImportJob.html),
-// and StopUserImportJob (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_StopUserImportJob.html).
 type UserImportJobType struct {
 	CloudWatchLogsRoleARN *string      `json:"cloudWatchLogsRoleARN,omitempty"`
 	CompletionDate        *metav1.Time `json:"completionDate,omitempty"`
@@ -743,23 +589,18 @@ type UserImportJobType struct {
 	UserPoolID            *string      `json:"userPoolID,omitempty"`
 }
 
-// User pool add-ons. Contains settings for activation of advanced security
-// features. To log user security information but take no action, set to AUDIT.
-// To configure automatic security responses to risky traffic to your user pool,
-// set to ENFORCED.
+// Contains settings for activation of threat protection, including the operating
+// mode and additional authentication types. To log user security information
+// but take no action, set to AUDIT. To configure automatic security responses
+// to potentially unwanted traffic to your user pool, set to ENFORCED.
 //
 // For more information, see Adding advanced security to a user pool (https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-settings-advanced-security.html).
-//
-// This data type is a request and response parameter of CreateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html)
-// and UpdateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html),
-// and a response parameter of DescribeUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPool.html).
+// To activate this setting, your user pool must be on the Plus tier (https://docs.aws.amazon.com/cognito/latest/developerguide/feature-plans-features-plus.html).
 type UserPoolAddOnsType struct {
 	AdvancedSecurityMode *string `json:"advancedSecurityMode,omitempty"`
 }
 
 // A short description of a user pool app client.
-//
-// This data type is a response parameter of ListUserPoolClients (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_ListUserPoolClients.html).
 type UserPoolClientDescription struct {
 	ClientID   *string `json:"clientID,omitempty"`
 	ClientName *string `json:"clientName,omitempty"`
@@ -767,10 +608,6 @@ type UserPoolClientDescription struct {
 }
 
 // The configuration of a user pool client.
-//
-// This data type is a request parameter of CreateUserPoolClient (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPoolClient.html)
-// and UpdateUserPoolClient (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPoolClient.html),
-// and a response parameter of DescribeUserPoolClient (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPoolClient.html).
 type UserPoolClientType struct {
 	AccessTokenValidity             *int64    `json:"accessTokenValidity,omitempty"`
 	AllowedOAuthFlows               []*string `json:"allowedOAuthFlows,omitempty"`
@@ -783,10 +620,6 @@ type UserPoolClientType struct {
 	// Amazon Pinpoint isn't available in all Amazon Web Services Regions. For a
 	// list of available Regions, see Amazon Cognito and Amazon Pinpoint Region
 	// availability (https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-pinpoint-integration.html#cognito-user-pools-find-region-mappings).
-	//
-	// This data type is a request parameter of CreateUserPoolClient (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPoolClient.html)
-	// and UpdateUserPoolClient (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPoolClient.html),
-	// and a response parameter of DescribeUserPoolClient (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPoolClient.html).
 	AnalyticsConfiguration                   *AnalyticsConfigurationType `json:"analyticsConfiguration,omitempty"`
 	AuthSessionValidity                      *int64                      `json:"authSessionValidity,omitempty"`
 	CallbackURLs                             []*string                   `json:"callbackURLs,omitempty"`
@@ -802,76 +635,58 @@ type UserPoolClientType struct {
 	LogoutURLs                               []*string                   `json:"logoutURLs,omitempty"`
 	PreventUserExistenceErrors               *string                     `json:"preventUserExistenceErrors,omitempty"`
 	ReadAttributes                           []*string                   `json:"readAttributes,omitempty"`
-	RefreshTokenValidity                     *int64                      `json:"refreshTokenValidity,omitempty"`
-	SupportedIdentityProviders               []*string                   `json:"supportedIdentityProviders,omitempty"`
+	// The configuration of your app client for refresh token rotation. When enabled,
+	// your app client issues new ID, access, and refresh tokens when users renew
+	// their sessions with refresh tokens. When disabled, token refresh issues only
+	// ID and access tokens.
+	RefreshTokenRotation       *RefreshTokenRotationType `json:"refreshTokenRotation,omitempty"`
+	RefreshTokenValidity       *int64                    `json:"refreshTokenValidity,omitempty"`
+	SupportedIdentityProviders []*string                 `json:"supportedIdentityProviders,omitempty"`
 	// The time units that, with IdTokenValidity, AccessTokenValidity, and RefreshTokenValidity,
 	// set and display the duration of ID, access, and refresh tokens for an app
 	// client. You can assign a separate token validity unit to each type of token.
-	//
-	// This data type is a request parameter of CreateUserPoolClient (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPoolClient.html)
-	// and UpdateUserPoolClient (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPoolClient.html),
-	// and a response parameter of DescribeUserPoolClient (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPoolClient.html).
 	TokenValidityUnits *TokenValidityUnitsType `json:"tokenValidityUnits,omitempty"`
 	UserPoolID         *string                 `json:"userPoolID,omitempty"`
 	WriteAttributes    []*string               `json:"writeAttributes,omitempty"`
 }
 
 // A short description of a user pool.
-//
-// This data type is a response parameter of ListUserPools (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_ListUserPools.html).
 type UserPoolDescriptionType struct {
 	CreationDate *metav1.Time `json:"creationDate,omitempty"`
 	ID           *string      `json:"id,omitempty"`
 	// A collection of user pool Lambda triggers. Amazon Cognito invokes triggers
 	// at several possible stages of user pool operations. Triggers can modify the
 	// outcome of the operations that invoked them.
-	//
-	// This data type is a request and response parameter of CreateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html)
-	// and UpdateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html),
-	// and a response parameter of DescribeUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPool.html).
 	LambdaConfig     *LambdaConfigType `json:"lambdaConfig,omitempty"`
 	LastModifiedDate *metav1.Time      `json:"lastModifiedDate,omitempty"`
 	Name             *string           `json:"name,omitempty"`
+	ReplicaRegions   []*string         `json:"replicaRegions,omitempty"`
 	Status           *string           `json:"status,omitempty"`
 }
 
 // A list of user pool policies. Contains the policy that sets password-complexity
 // requirements.
-//
-// This data type is a request and response parameter of CreateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html)
-// and UpdateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html),
-// and a response parameter of DescribeUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPool.html).
 type UserPoolPolicyType struct {
 	// The password policy settings for a user pool, including complexity, history,
 	// and length requirements.
-	//
-	// This data type is a request and response parameter of CreateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html)
-	// and UpdateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html),
-	// and a response parameter of DescribeUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPool.html).
 	PasswordPolicy *PasswordPolicyType `json:"passwordPolicy,omitempty"`
 }
 
+// Contains information about a replica user pool, including Region, status,
+// role, and ARN.
+type UserPoolReplicaType struct {
+	UserPoolARN *string `json:"userPoolARN,omitempty"`
+}
+
 // The configuration of a user pool.
-//
-// This data type is a response parameter of CreateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html),
-// UpdateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html),
-// and DescribeUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPool.html).
 type UserPoolType struct {
 	// The settings for user message delivery in forgot-password operations. Contains
 	// preference for email or SMS message delivery of password reset codes, or
 	// for admin-only password reset.
-	//
-	// This data type is a request and response parameter of CreateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html)
-	// and UpdateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html),
-	// and a response parameter of DescribeUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPool.html).
 	AccountRecoverySetting *AccountRecoverySettingType `json:"accountRecoverySetting,omitempty"`
 	// The settings for administrator creation of users in a user pool. Contains
 	// settings for allowing user sign-up, customizing invitation messages to new
 	// users, and the amount of time before temporary passwords expire.
-	//
-	// This data type is a request and response parameter of CreateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html)
-	// and UpdateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html),
-	// and a response parameter of DescribeUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPool.html).
 	AdminCreateUserConfig  *AdminCreateUserConfigType `json:"adminCreateUserConfig,omitempty"`
 	AliasAttributes        []*string                  `json:"aliasAttributes,omitempty"`
 	ARN                    *string                    `json:"arn,omitempty"`
@@ -879,29 +694,10 @@ type UserPoolType struct {
 	CreationDate           *metav1.Time               `json:"creationDate,omitempty"`
 	CustomDomain           *string                    `json:"customDomain,omitempty"`
 	DeletionProtection     *string                    `json:"deletionProtection,omitempty"`
-	// The device-remembering configuration for a user pool. A DescribeUserPool
-	// (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPool.html)
-	// request returns a null value for this object when the user pool isn't configured
-	// to remember devices. When device remembering is active, you can remember
-	// a user's device with a ConfirmDevice (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_ConfirmDevice.html)
-	// API request. Additionally. when the property DeviceOnlyRememberedOnUserPrompt
-	// is true, you must follow ConfirmDevice with an UpdateDeviceStatus (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateDeviceStatus.html)
-	// API request that sets the user's device to remembered or not_remembered.
-	//
-	// To sign in with a remembered device, include DEVICE_KEY in the authentication
-	// parameters in your user's InitiateAuth (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_InitiateAuth.html)
-	// request. If your app doesn't include a DEVICE_KEY parameter, the response
-	// (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_InitiateAuth.html#API_InitiateAuth_ResponseSyntax)
-	// from Amazon Cognito includes newly-generated DEVICE_KEY and DEVICE_GROUP_KEY
-	// values under NewDeviceMetadata. Store these values to use in future device-authentication
-	// requests.
+	// The device-remembering configuration for a user pool.
 	//
 	// When you provide a value for any property of DeviceConfiguration, you activate
 	// the device remembering for the user pool.
-	//
-	// This data type is a request and response parameter of CreateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html)
-	// and UpdateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html),
-	// and a response parameter of DescribeUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPool.html).
 	DeviceConfiguration *DeviceConfigurationType `json:"deviceConfiguration,omitempty"`
 	Domain              *string                  `json:"domain,omitempty"`
 	// The email configuration of your user pool. The email configuration type sets
@@ -912,36 +708,27 @@ type UserPoolType struct {
 	// in the Amazon Web Services Region where you created your user pool, and in
 	// alternate Regions in some cases. For more information on the supported Regions,
 	// see Email settings for Amazon Cognito user pools (https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-email.html).
-	//
-	// This data type is a request parameter of CreateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html),
-	// UpdateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html),
-	// and SetUserPoolMfaConfig (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_SetUserPoolMfaConfig.html),
-	// and a response parameter of CreateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html),
-	// UpdateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html),
-	// and GetUserPoolMfaConfig (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_GetUserPoolMfaConfig.html).
 	EmailConfiguration        *EmailConfigurationType `json:"emailConfiguration,omitempty"`
 	EmailConfigurationFailure *string                 `json:"emailConfigurationFailure,omitempty"`
 	EmailVerificationMessage  *string                 `json:"emailVerificationMessage,omitempty"`
 	EmailVerificationSubject  *string                 `json:"emailVerificationSubject,omitempty"`
 	EstimatedNumberOfUsers    *int64                  `json:"estimatedNumberOfUsers,omitempty"`
 	ID                        *string                 `json:"id,omitempty"`
+	// Specifies the issuer configuration for a user pool. Contains settings that
+	// determine how tokens are issued and validated.
+	IssuerConfiguration *IssuerConfigurationType `json:"issuerConfiguration,omitempty"`
+	// Specifies the key configuration for a user pool. Contains settings for encryption
+	// keys used to secure user pool data.
+	KeyConfiguration *KeyConfigurationType `json:"keyConfiguration,omitempty"`
 	// A collection of user pool Lambda triggers. Amazon Cognito invokes triggers
 	// at several possible stages of user pool operations. Triggers can modify the
 	// outcome of the operations that invoked them.
-	//
-	// This data type is a request and response parameter of CreateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html)
-	// and UpdateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html),
-	// and a response parameter of DescribeUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPool.html).
 	LambdaConfig     *LambdaConfigType `json:"lambdaConfig,omitempty"`
 	LastModifiedDate *metav1.Time      `json:"lastModifiedDate,omitempty"`
 	MFAConfiguration *string           `json:"mfaConfiguration,omitempty"`
 	Name             *string           `json:"name,omitempty"`
 	// A list of user pool policies. Contains the policy that sets password-complexity
 	// requirements.
-	//
-	// This data type is a request and response parameter of CreateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html)
-	// and UpdateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html),
-	// and a response parameter of DescribeUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPool.html).
 	Policies                 *UserPoolPolicyType    `json:"policies,omitempty"`
 	SchemaAttributes         []*SchemaAttributeType `json:"schemaAttributes,omitempty"`
 	SmsAuthenticationMessage *string                `json:"smsAuthenticationMessage,omitempty"`
@@ -949,13 +736,6 @@ type UserPoolType struct {
 	// Service. To send SMS messages with Amazon SNS in the Amazon Web Services
 	// Region that you want, the Amazon Cognito user pool uses an Identity and Access
 	// Management (IAM) role in your Amazon Web Services account.
-	//
-	// This data type is a request parameter of CreateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html),
-	// UpdateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html),
-	// and SetUserPoolMfaConfig (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_SetUserPoolMfaConfig.html),
-	// and a response parameter of CreateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html),
-	// UpdateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html),
-	// and GetUserPoolMfaConfig (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_GetUserPoolMfaConfig.html).
 	SmsConfiguration        *SmsConfigurationType `json:"smsConfiguration,omitempty"`
 	SmsConfigurationFailure *string               `json:"smsConfigurationFailure,omitempty"`
 	SmsVerificationMessage  *string               `json:"smsVerificationMessage,omitempty"`
@@ -965,43 +745,25 @@ type UserPoolType struct {
 	// Amazon Cognito how to handle changes to the value of your users' email address
 	// and phone number attributes. Formore information, see Verifying updates to
 	// email addresses and phone numbers (https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-email-phone-verification.html#user-pool-settings-verifications-verify-attribute-updates).
-	//
-	// This data type is a request and response parameter of CreateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html)
-	// and UpdateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html),
-	// and a response parameter of DescribeUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPool.html).
 	UserAttributeUpdateSettings *UserAttributeUpdateSettingsType `json:"userAttributeUpdateSettings,omitempty"`
-	// User pool add-ons. Contains settings for activation of advanced security
-	// features. To log user security information but take no action, set to AUDIT.
-	// To configure automatic security responses to risky traffic to your user pool,
-	// set to ENFORCED.
+	// Contains settings for activation of threat protection, including the operating
+	// mode and additional authentication types. To log user security information
+	// but take no action, set to AUDIT. To configure automatic security responses
+	// to potentially unwanted traffic to your user pool, set to ENFORCED.
 	//
 	// For more information, see Adding advanced security to a user pool (https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-settings-advanced-security.html).
-	//
-	// This data type is a request and response parameter of CreateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html)
-	// and UpdateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html),
-	// and a response parameter of DescribeUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPool.html).
+	// To activate this setting, your user pool must be on the Plus tier (https://docs.aws.amazon.com/cognito/latest/developerguide/feature-plans-features-plus.html).
 	UserPoolAddOns     *UserPoolAddOnsType `json:"userPoolAddOns,omitempty"`
 	UserPoolTags       map[string]*string  `json:"userPoolTags,omitempty"`
 	UsernameAttributes []*string           `json:"usernameAttributes,omitempty"`
 	// The configuration of a user pool for username case sensitivity.
-	//
-	// This data type is a request and response parameter of CreateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html)
-	// and UpdateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html),
-	// and a response parameter of DescribeUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPool.html).
 	UsernameConfiguration *UsernameConfigurationType `json:"usernameConfiguration,omitempty"`
 	// The template for the verification message that your user pool delivers to
 	// users who set an email address or phone number attribute.
-	//
-	// This data type is a request and response parameter of CreateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html)
-	// and UpdateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html),
-	// and a response parameter of DescribeUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPool.html).
 	VerificationMessageTemplate *VerificationMessageTemplateType `json:"verificationMessageTemplate,omitempty"`
 }
 
 // A user profile in a Amazon Cognito user pool.
-//
-// This data type is a response parameter to AdminCreateUser (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_AdminCreateUser.html)
-// and ListUsers (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_ListUsers.html).
 type UserType struct {
 	Enabled              *bool        `json:"enabled,omitempty"`
 	UserCreateDate       *metav1.Time `json:"userCreateDate,omitempty"`
@@ -1009,20 +771,12 @@ type UserType struct {
 }
 
 // The configuration of a user pool for username case sensitivity.
-//
-// This data type is a request and response parameter of CreateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html)
-// and UpdateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html),
-// and a response parameter of DescribeUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPool.html).
 type UsernameConfigurationType struct {
 	CaseSensitive *bool `json:"caseSensitive,omitempty"`
 }
 
 // The template for the verification message that your user pool delivers to
 // users who set an email address or phone number attribute.
-//
-// This data type is a request and response parameter of CreateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateUserPool.html)
-// and UpdateUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserPool.html),
-// and a response parameter of DescribeUserPool (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPool.html).
 type VerificationMessageTemplateType struct {
 	DefaultEmailOption *string `json:"defaultEmailOption,omitempty"`
 	EmailMessage       *string `json:"emailMessage,omitempty"`
@@ -1034,11 +788,17 @@ type VerificationMessageTemplateType struct {
 
 // The details of a passkey, or webauthN, biometric or security-key authentication
 // factor for a user.
-//
-// This data type is a response parameter of ListWebAuthnCredentials (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_ListWebAuthnCredentials.html).
 type WebAuthnCredentialDescription struct {
 	CreatedAt              *metav1.Time `json:"createdAt,omitempty"`
 	CredentialID           *string      `json:"credentialID,omitempty"`
 	FriendlyCredentialName *string      `json:"friendlyCredentialName,omitempty"`
 	RelyingPartyID         *string      `json:"relyingPartyID,omitempty"`
+}
+
+// A user's preference for using passkey, or WebAuthn, multi-factor authentication
+// (MFA). Turns passkey MFA on and off for the user. Unlike other MFA settings
+// types, this type doesn't include a PreferredMfa option because passkey MFA
+// applies only when passkey is the first authentication factor.
+type WebAuthnMFASettingsType struct {
+	Enabled *bool `json:"enabled,omitempty"`
 }

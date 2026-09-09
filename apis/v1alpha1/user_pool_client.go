@@ -36,9 +36,10 @@ type UserPoolClientSpec struct {
 	// If you don't specify otherwise in the configuration of your app client, your
 	// accesstokens are valid for one hour.
 	AccessTokenValidity *int64 `json:"accessTokenValidity,omitempty"`
-	// The OAuth grant types that you want your app client to generate. To create
-	// an app client that generates client credentials grants, you must add client_credentials
-	// as the only allowed OAuth flow.
+	// The OAuth grant types that you want your app client to generate for clients
+	// in managed login authentication. To create an app client that generates client
+	// credentials grants, you must add client_credentials as the only allowed OAuth
+	// flow.
 	//
 	// code
 	//
@@ -47,18 +48,18 @@ type UserPoolClientSpec struct {
 	//
 	// implicit
 	//
-	// Issue the access token (and, optionally, ID token, based on scopes) directly
-	// to your user.
+	// Issue the access token, and the ID token when scopes like openid and profile
+	// are requested, directly to your user.
 	//
 	// client_credentials
 	//
 	// Issue the access token from the /oauth2/token endpoint directly to a non-person
-	// user using a combination of the client ID and client secret.
+	// user, authorized by a combination of the client ID and client secret.
 	AllowedOAuthFlows []*string `json:"allowedOAuthFlows,omitempty"`
-	// Set to true to use OAuth 2.0 features in your user pool app client.
+	// Set to true to use OAuth 2.0 authorization server features in your app client.
 	//
-	// AllowedOAuthFlowsUserPoolClient must be true before you can configure the
-	// following features in your app client.
+	// This parameter must have a value of true before you can configure the following
+	// features in your app client.
 	//
 	//   - CallBackURLs: Callback URLs.
 	//
@@ -69,91 +70,87 @@ type UserPoolClientSpec struct {
 	//   - AllowedOAuthFlows: Support for authorization code, implicit, and client
 	//     credentials OAuth 2.0 grants.
 	//
-	// To use OAuth 2.0 features, configure one of these features in the Amazon
-	// Cognito console or set AllowedOAuthFlowsUserPoolClient to true in a CreateUserPoolClient
-	// or UpdateUserPoolClient API request. If you don't set a value for AllowedOAuthFlowsUserPoolClient
-	// in a request with the CLI or SDKs, it defaults to false.
+	// To use authorization server features, configure one of these features in
+	// the Amazon Cognito console or set AllowedOAuthFlowsUserPoolClient to true
+	// in a CreateUserPoolClient or UpdateUserPoolClient API request. If you don't
+	// set a value for AllowedOAuthFlowsUserPoolClient in a request with the CLI
+	// or SDKs, it defaults to false. When false, only SDK-based API sign-in is
+	// permitted.
 	AllowedOAuthFlowsUserPoolClient *bool `json:"allowedOAuthFlowsUserPoolClient,omitempty"`
-	// The allowed OAuth scopes. Possible values provided by OAuth are phone, email,
-	// openid, and profile. Possible values provided by Amazon Web Services are
-	// aws.cognito.signin.user.admin. Custom scopes created in Resource Servers
-	// are also supported.
+	// The OAuth, OpenID Connect (OIDC), and custom scopes that you want to permit
+	// your app client to authorize access with. Scopes govern access control to
+	// user pool self-service API operations, user data from the userInfo endpoint,
+	// and third-party APIs. Scope values include phone, email, openid, and profile.
+	// The aws.cognito.signin.user.admin scope authorizes user self-service operations.
+	// Custom scopes with resource servers authorize access to external APIs.
 	AllowedOAuthScopes []*string `json:"allowedOAuthScopes,omitempty"`
 	// The user pool analytics configuration for collecting metrics and sending
 	// them to your Amazon Pinpoint campaign.
 	//
 	// In Amazon Web Services Regions where Amazon Pinpoint isn't available, user
-	// pools only support sending events to Amazon Pinpoint projects in Amazon Web
-	// Services Region us-east-1. In Regions where Amazon Pinpoint is available,
-	// user pools support sending events to Amazon Pinpoint projects within that
-	// same Region.
+	// pools might not have access to analytics or might be configurable with campaigns
+	// in the US East (N. Virginia) Region. For more information, see Using Amazon
+	// Pinpoint analytics (https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-pinpoint-integration.html).
 	AnalyticsConfiguration *AnalyticsConfigurationType `json:"analyticsConfiguration,omitempty"`
 	// Amazon Cognito creates a session token for each API request in an authentication
 	// flow. AuthSessionValidity is the duration, in minutes, of that session token.
 	// Your user pool native user must respond to each authentication challenge
 	// before the session expires.
 	AuthSessionValidity *int64 `json:"authSessionValidity,omitempty"`
-	// A list of allowed redirect (callback) URLs for the IdPs.
+	// A list of allowed redirect, or callback, URLs for managed login authentication.
+	// These URLs are the paths where you want to send your users' browsers after
+	// they complete authentication with managed login or a third-party IdP. Typically,
+	// callback URLs are the home of an application that uses OAuth or OIDC libraries
+	// to process authentication outcomes.
 	//
-	// A redirect URI must:
+	// A redirect URI must meet the following requirements:
 	//
 	//   - Be an absolute URI.
 	//
-	//   - Be registered with the authorization server.
+	//   - Be registered with the authorization server. Amazon Cognito doesn't
+	//     accept authorization requests with redirect_uri values that aren't in
+	//     the list of CallbackURLs that you provide in this parameter.
 	//
 	//   - Not include a fragment component.
 	//
 	// See OAuth 2.0 - Redirection Endpoint (https://tools.ietf.org/html/rfc6749#section-3.1.2).
 	//
-	// Amazon Cognito requires HTTPS over HTTP except for http://localhost for testing
-	// purposes only.
+	// Amazon Cognito requires HTTPS over HTTP except for callback URLs to http://localhost,
+	// http://127.0.0.1 and http://[::1]. These callback URLs are for testing purposes
+	// only. You can specify custom TCP ports for your callback URLs.
 	//
 	// App callback URLs such as myapp://example are also supported.
 	CallbackURLs []*string `json:"callbackURLs,omitempty"`
 	// The default redirect URI. In app clients with one assigned IdP, replaces
 	// redirect_uri in authentication requests. Must be in the CallbackURLs list.
 	//
-	// A redirect URI must:
-	//
-	//   - Be an absolute URI.
-	//
-	//   - Be registered with the authorization server.
-	//
-	//   - Not include a fragment component.
-	//
-	// For more information, see Default redirect URI (https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-client-apps.html#cognito-user-pools-app-idp-settings-about).
-	//
-	// Amazon Cognito requires HTTPS over HTTP except for http://localhost for testing
-	// purposes only.
-	//
-	// App callback URLs such as myapp://example are also supported.
-	//
 	// Regex Pattern: `^[\p{L}\p{M}\p{S}\p{N}\p{P}]+$`
 	DefaultRedirectURI *string `json:"defaultRedirectURI,omitempty"`
-	// Activates the propagation of additional user context data. For more information
-	// about propagation of user context data, see Adding advanced security to a
-	// user pool (https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-settings-threat-protection.html).
-	// If you don’t include this parameter, you can't send device fingerprint
-	// information, including source IP address, to Amazon Cognito advanced security.
-	// You can only activate EnablePropagateAdditionalUserContextData in an app
-	// client that has a client secret.
+	// When true, your application can include additional UserContextData in authentication
+	// requests. This data includes the IP address, and contributes to analysis
+	// by threat protection features. For more information about propagation of
+	// user context data, see Adding session data to API requests (https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-settings-adaptive-authentication.html#user-pool-settings-adaptive-authentication-device-fingerprint).
+	// If you don’t include this parameter, you can't send the source IP address
+	// to Amazon Cognito threat protection features. You can only activate EnablePropagateAdditionalUserContextData
+	// in an app client that has a client secret.
 	EnablePropagateAdditionalUserContextData *bool `json:"enablePropagateAdditionalUserContextData,omitempty"`
-	// Activates or deactivates token revocation. For more information about revoking
-	// tokens, see RevokeToken (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_RevokeToken.html).
+	// Activates or deactivates token revocation (https://docs.aws.amazon.com/cognito/latest/developerguide/token-revocation.html)
+	// in the target app client.
 	//
 	// If you don't include this parameter, token revocation is automatically activated
 	// for the new user pool client.
 	EnableTokenRevocation *bool `json:"enableTokenRevocation,omitempty"`
-	// The authentication flows that you want your user pool client to support.
-	// For each app client in your user pool, you can sign in your users with any
-	// combination of one or more flows, including with a user name and Secure Remote
-	// Password (SRP), a user name and password, or a custom authentication process
-	// that you define with Lambda functions.
+	// The authentication flows (https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-authentication-flow-methods.html)
+	// that you want your user pool client to support. For each app client in your
+	// user pool, you can sign in your users with any combination of one or more
+	// flows, including with a user name and Secure Remote Password (SRP), a user
+	// name and password, or a custom authentication process that you define with
+	// Lambda functions.
 	//
-	// If you don't specify a value for ExplicitAuthFlows, your user client supports
+	// If you don't specify a value for ExplicitAuthFlows, your app client supports
 	// ALLOW_REFRESH_TOKEN_AUTH, ALLOW_USER_SRP_AUTH, and ALLOW_CUSTOM_AUTH.
 	//
-	// Valid values include:
+	// The values for authentication flow options include the following.
 	//
 	//   - ALLOW_USER_AUTH: Enable selection-based sign-in with USER_AUTH. This
 	//     setting covers username-password, secure remote password (SRP), passwordless,
@@ -161,7 +158,9 @@ type UserPoolClientSpec struct {
 	//     and SRP authentication without other ExplicitAuthFlows permitting them.
 	//     For example users can complete an SRP challenge through USER_AUTH without
 	//     the flow USER_SRP_AUTH being active for the app client. This flow doesn't
-	//     include CUSTOM_AUTH.
+	//     include CUSTOM_AUTH. To activate this setting, your user pool must be
+	//     in the Essentials tier (https://docs.aws.amazon.com/cognito/latest/developerguide/feature-plans-features-essentials.html)
+	//     or higher.
 	//
 	//   - ALLOW_ADMIN_USER_PASSWORD_AUTH: Enable admin based user password authentication
 	//     flow ADMIN_USER_PASSWORD_AUTH. This setting replaces the ADMIN_NO_SRP_AUTH
@@ -184,8 +183,10 @@ type UserPoolClientSpec struct {
 	// to user pool clients at the same time as values that begin with ALLOW_,like
 	// ALLOW_USER_SRP_AUTH.
 	ExplicitAuthFlows []*string `json:"explicitAuthFlows,omitempty"`
-	// Boolean to specify whether you want to generate a secret for the user pool
-	// client being created.
+	// When true, generates a client secret for the app client. Client secrets are
+	// used with server-side and machine-to-machine applications. Client secrets
+	// are automatically generated; you can't specify a secret value. For more information,
+	// see App client types (https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-client-apps.html#user-pool-settings-client-app-client-types).
 	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Value is immutable once set"
 	GenerateSecret *bool `json:"generateSecret,omitempty"`
 	// The ID token time limit. After this limit expires, your user can't use their
@@ -202,14 +203,21 @@ type UserPoolClientSpec struct {
 	// If you don't specify otherwise in the configuration of your app client, your
 	// IDtokens are valid for one hour.
 	IDTokenValidity *int64 `json:"idTokenValidity,omitempty"`
-	// A list of allowed logout URLs for the IdPs.
+	// A list of allowed logout URLs for managed login authentication. When you
+	// pass logout_uri and client_id parameters to /logout, Amazon Cognito signs
+	// out your user and redirects them to the logout URL. This parameter describes
+	// the URLs that you want to be the permitted targets of logout_uri. A typical
+	// use of these URLs is when a user selects "Sign out" and you redirect them
+	// to your public homepage. For more information, see Logout endpoint (https://docs.aws.amazon.com/cognito/latest/developerguide/logout-endpoint.html).
 	LogoutURLs []*string `json:"logoutURLs,omitempty"`
-	// The client name for the user pool client you would like to create.
+	// A friendly name for the app client that you want to create.
 	//
 	// Regex Pattern: `^[\w\s+=,.@-]+$`
 	// +kubebuilder:validation:Required
 	Name *string `json:"name"`
-	// Errors and responses that you want Amazon Cognito APIs to return during authentication,
+	// When ENABLED, suppresses messages that might indicate a valid user exists
+	// when someone attempts sign-in. This parameters sets your preference for the
+	// errors and responses that you want Amazon Cognito APIs to return during authentication,
 	// account confirmation, and password recovery when the user doesn't exist in
 	// the user pool. When set to ENABLED and the user doesn't exist, authentication
 	// returns an error indicating either the username or password was incorrect.
@@ -218,29 +226,24 @@ type UserPoolClientSpec struct {
 	// return a UserNotFoundException exception if the user doesn't exist in the
 	// user pool.
 	//
-	// Valid values include:
-	//
-	//   - ENABLED - This prevents user existence-related errors.
-	//
-	//   - LEGACY - This represents the early behavior of Amazon Cognito where
-	//     user existence related errors aren't prevented.
-	//
-	// Defaults to LEGACY when you don't provide a value.
+	// Defaults to LEGACY.
 	PreventUserExistenceErrors *string `json:"preventUserExistenceErrors,omitempty"`
 	// The list of user attributes that you want your app client to have read access
 	// to. After your user authenticates in your app, their access token authorizes
-	// them to read their own attribute value for any attribute in this list. An
-	// example of this kind of activity is when your user selects a link to view
-	// their profile information. Your app makes a GetUser (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_GetUser.html)
-	// API request to retrieve and display your user's profile data.
+	// them to read their own attribute value for any attribute in this list.
 	//
 	// When you don't specify the ReadAttributes for your app client, your app can
-	// read the values of email_verified, phone_number_verified, and the Standard
+	// read the values of email_verified, phone_number_verified, and the standard
 	// attributes of your user pool. When your user pool app client has read access
 	// to these default attributes, ReadAttributes doesn't return any information.
 	// Amazon Cognito only populates ReadAttributes in the API response if you have
 	// specified your own custom set of read attributes.
 	ReadAttributes []*string `json:"readAttributes,omitempty"`
+	// The configuration of your app client for refresh token rotation. When enabled,
+	// your app client issues new ID, access, and refresh tokens when users renew
+	// their sessions with refresh tokens. When disabled, token refresh issues only
+	// ID and access tokens.
+	RefreshTokenRotation *RefreshTokenRotationType `json:"refreshTokenRotation,omitempty"`
 	// The refresh token time limit. After this limit expires, your user can't use
 	// their refresh token. To specify the time unit for RefreshTokenValidity as
 	// seconds, minutes, hours, or days, set a TokenValidityUnits value in your
@@ -263,17 +266,16 @@ type UserPoolClientSpec struct {
 	// and LoginWithAmazon. You can also specify the names that you configured for
 	// the SAML and OIDC IdPs in your user pool, for example MySAMLIdP or MyOIDCIdP.
 	//
-	// This setting applies to providers that you can access with the hosted UI
-	// and OAuth 2.0 authorization server (https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-app-integration.html).
-	// The removal of COGNITO from this list doesn't prevent authentication operations
-	// for local users with the user pools API in an Amazon Web Services SDK. The
-	// only way to prevent API-based authentication is to block access with a WAF
-	// rule (https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-waf.html).
+	// This parameter sets the IdPs that managed login (https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-managed-login.html)
+	// will display on the login page for your app client. The removal of COGNITO
+	// from this list doesn't prevent authentication operations for local users
+	// with the user pools API in an Amazon Web Services SDK. The only way to prevent
+	// SDK-based authentication is to block access with a WAF rule (https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-waf.html).
 	SupportedIdentityProviders []*string `json:"supportedIdentityProviders,omitempty"`
-	// The units in which the validity times are represented. The default unit for
-	// RefreshToken is days, and default for ID and access tokens are hours.
+	// The units that validity times are represented in. The default unit for refresh
+	// tokens is days, and the default for ID and access tokens are hours.
 	TokenValidityUnits *TokenValidityUnitsType `json:"tokenValidityUnits,omitempty"`
-	// The user pool ID for the user pool where you want to create a user pool client.
+	// The ID of the user pool where you want to create an app client.
 	//
 	// Regex Pattern: `^[\w-]+_[0-9a-zA-Z]+$`
 	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Value is immutable once set"
@@ -282,10 +284,7 @@ type UserPoolClientSpec struct {
 	// The list of user attributes that you want your app client to have write access
 	// to. After your user authenticates in your app, their access token authorizes
 	// them to set or modify their own attribute value for any attribute in this
-	// list. An example of this kind of activity is when you present your user with
-	// a form to update their profile information and they change their last name.
-	// Your app then makes an UpdateUserAttributes (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserAttributes.html)
-	// API request and sets family_name to the new value.
+	// list.
 	//
 	// When you don't specify the WriteAttributes for your app client, your app
 	// can write the values of the Standard attributes of your user pool. When your

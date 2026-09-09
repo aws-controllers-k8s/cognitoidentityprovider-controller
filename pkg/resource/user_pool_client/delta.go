@@ -193,6 +193,24 @@ func newResourceDelta(
 			delta.Add("Spec.ReadAttributes", a.ko.Spec.ReadAttributes, b.ko.Spec.ReadAttributes)
 		}
 	}
+	if ackcompare.HasNilDifference(a.ko.Spec.RefreshTokenRotation, b.ko.Spec.RefreshTokenRotation) {
+		delta.Add("Spec.RefreshTokenRotation", a.ko.Spec.RefreshTokenRotation, b.ko.Spec.RefreshTokenRotation)
+	} else if a.ko.Spec.RefreshTokenRotation != nil && b.ko.Spec.RefreshTokenRotation != nil {
+		if ackcompare.HasNilDifference(a.ko.Spec.RefreshTokenRotation.Feature, b.ko.Spec.RefreshTokenRotation.Feature) {
+			delta.Add("Spec.RefreshTokenRotation.Feature", a.ko.Spec.RefreshTokenRotation.Feature, b.ko.Spec.RefreshTokenRotation.Feature)
+		} else if a.ko.Spec.RefreshTokenRotation.Feature != nil && b.ko.Spec.RefreshTokenRotation.Feature != nil {
+			if *a.ko.Spec.RefreshTokenRotation.Feature != *b.ko.Spec.RefreshTokenRotation.Feature {
+				delta.Add("Spec.RefreshTokenRotation.Feature", a.ko.Spec.RefreshTokenRotation.Feature, b.ko.Spec.RefreshTokenRotation.Feature)
+			}
+		}
+		if ackcompare.HasNilDifference(a.ko.Spec.RefreshTokenRotation.RetryGracePeriodSeconds, b.ko.Spec.RefreshTokenRotation.RetryGracePeriodSeconds) {
+			delta.Add("Spec.RefreshTokenRotation.RetryGracePeriodSeconds", a.ko.Spec.RefreshTokenRotation.RetryGracePeriodSeconds, b.ko.Spec.RefreshTokenRotation.RetryGracePeriodSeconds)
+		} else if a.ko.Spec.RefreshTokenRotation.RetryGracePeriodSeconds != nil && b.ko.Spec.RefreshTokenRotation.RetryGracePeriodSeconds != nil {
+			if *a.ko.Spec.RefreshTokenRotation.RetryGracePeriodSeconds != *b.ko.Spec.RefreshTokenRotation.RetryGracePeriodSeconds {
+				delta.Add("Spec.RefreshTokenRotation.RetryGracePeriodSeconds", a.ko.Spec.RefreshTokenRotation.RetryGracePeriodSeconds, b.ko.Spec.RefreshTokenRotation.RetryGracePeriodSeconds)
+			}
+		}
+	}
 	if ackcompare.HasNilDifference(a.ko.Spec.RefreshTokenValidity, b.ko.Spec.RefreshTokenValidity) {
 		delta.Add("Spec.RefreshTokenValidity", a.ko.Spec.RefreshTokenValidity, b.ko.Spec.RefreshTokenValidity)
 	} else if a.ko.Spec.RefreshTokenValidity != nil && b.ko.Spec.RefreshTokenValidity != nil {
