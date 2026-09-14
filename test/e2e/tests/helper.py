@@ -34,7 +34,7 @@ class CognitoValidator:
             response = self.cognitoidentityprovider_client.list_tags_for_resource(ResourceArn=user_pool_arn)
             return response['Tags']
         except self.cognitoidentityprovider_client.exceptions.ResourceNotFoundException:
-            return None
+            return []
 
     def get_user_pool_client(self, user_pool_id, client_id):
         try:
@@ -49,6 +49,16 @@ class CognitoValidator:
     def user_pool_client_exists(self, user_pool_id, client_id):
         response = self.get_user_pool_client(user_pool_id, client_id)
         return response is not None
+
+    def list_user_pool_client_secrets(self, user_pool_id, client_id):
+        try:
+            response = self.cognitoidentityprovider_client.list_user_pool_client_secrets(
+                UserPoolId=user_pool_id,
+                ClientId=client_id,
+            )
+            return response['ClientSecrets']
+        except self.cognitoidentityprovider_client.exceptions.ResourceNotFoundException:
+            return []
 
     def get_resource_server(self, user_pool_id, identifier):
         try:
