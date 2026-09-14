@@ -8,6 +8,7 @@ ignore:
       - ManagedLoginBranding
       - UserImportJob
       - UserPoolDomain
+      - UserPoolReplica
   field_paths:
       - PasswordPolicyType.PasswordHistorySize
       - CreateUserPoolInput.UserPoolTier
@@ -15,8 +16,22 @@ ignore:
       - CreateUserPoolClientOutput.UserPoolClient.ClientSecret
       - DescribeUserPoolClientOutput.UserPoolClient.ClientSecret
       - UpdateUserPoolClientOutput.UserPoolClient.ClientSecret
+      - CreateUserPoolClientInput.ClientSecret
+      - AddUserPoolClientSecretOutput.ClientSecretDescriptor.ClientSecretValue
 sdk_names:
   model_name: cognito-identity-provider
+
+operations:
+  AddUserPoolClientSecret:
+    resource_name: UserPoolClientSecret
+    output_wrapper_field_path: ClientSecretDescriptor
+    operation_type: CREATE
+  ListUserPoolClientSecrets:
+    resource_name: UserPoolClientSecret
+    operation_type: READ_ONE
+  DeleteUserPoolClientSecret:
+    resource_name: UserPoolClientSecret
+    operation_type: DELETE
 
 resources:
   UserPool:
@@ -100,3 +115,66 @@ resources:
         references:
           resource: UserPool
           path: Status.ID
+  UserPoolClientSecret:
+    exceptions:
+      terminal_codes:
+        - InvalidParameterException
+    tags:
+      ignore: true
+    find_operation:
+      custom_method_name: customFind
+    renames:
+      operations:
+        AddUserPoolClientSecret:
+          input_fields:
+            ClientId: UserPoolClientId
+          output_fields:
+            ClientSecretId: Id
+        ListUserPoolClientSecrets:
+          input_fields:
+            ClientId: UserPoolClientId
+        DeleteUserPoolClientSecret:
+          input_fields:
+            ClientId: UserPoolClientId
+            ClientSecretId: Id
+    fields:
+      UserPoolId:
+        go_tag: 'json:"userPoolId,omitempty"'
+        is_immutable: true
+        is_required: true
+        references:
+          resource: UserPool
+          path: Status.ID
+      UserPoolClientId:
+        go_tag: 'json:"userPoolClientId,omitempty"'
+        is_immutable: true
+        is_required: true
+        references:
+          resource: UserPoolClient
+          path: Status.ID
+      Id:
+        is_primary_key: true
+        is_immutable: true
+      ClientSecret:
+        is_immutable: true
+        is_secret: true
+        compare:
+          is_ignored: true
+      ExportTo:
+        type: bytes
+        is_immutable: true
+        is_secret: true
+        compare:
+          is_ignored: true
+    is_adoptable: false
+    hooks:
+      sdk_create_pre_build_request:
+        template_path: hooks/user_pool_client_secret/sdk_create_pre_build_request.go.tpl
+      sdk_create_post_build_request:
+        template_path: hooks/user_pool_client_secret/sdk_create_post_build_request.go.tpl
+      sdk_create_post_request:
+        template_path: hooks/user_pool_client_secret/sdk_create_post_request.go.tpl
+      sdk_create_post_set_output:
+        template_path: hooks/user_pool_client_secret/sdk_create_post_set_output.go.tpl
+      sdk_file_end:
+        template_path: hooks/user_pool_client_secret/sdk_file_end.go.tpl

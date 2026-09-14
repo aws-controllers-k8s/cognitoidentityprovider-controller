@@ -20,39 +20,33 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-// ResourceServerSpec defines the desired state of ResourceServer.
-type ResourceServerSpec struct {
+// UserPoolClientSecretSpec defines the desired state of UserPoolClientSecret.
+type UserPoolClientSecretSpec struct {
 
-	// A unique resource server identifier for the resource server. The identifier
-	// can be an API friendly name like solar-system-data. You can also set an API
-	// URL like https://solar-system-data-api.example.com as your identifier.
+	// The client secret value you want to use. If you don't provide this parameter,
+	// Amazon Cognito generates a secure secret for you.
 	//
-	// Amazon Cognito represents scopes in the access token in the format $resource-server-identifier/$scope.
-	// Longer scope-identifier strings increase the size of your access tokens.
-	//
-	// Regex Pattern: `^[\x21\x23-\x5B\x5D-\x7E]+$`
+	// Regex Pattern: `^[\w+]+$`
 	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Value is immutable once set"
-	// +kubebuilder:validation:Required
-	Identifier *string `json:"identifier"`
-	// A friendly name for the resource server.
+	ClientSecret *ackv1alpha1.SecretKeyReference `json:"clientSecret,omitempty"`
+	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Value is immutable once set"
+	ExportTo *ackv1alpha1.SecretKeyReference `json:"exportTo,omitempty"`
+	// The ID of the app client for which you want to create a new secret.
 	//
-	// Regex Pattern: `^[\w\s+=,.@-]+$`
-	// +kubebuilder:validation:Required
-	Name *string `json:"name"`
-	// A list of custom scopes. Each scope is a key-value map with the keys ScopeName
-	// and ScopeDescription. The name of a custom scope is a combination of ScopeName
-	// and the resource server Name in this request, for example MyResourceServerName/MyScopeName.
-	Scopes []*ResourceServerScopeType `json:"scopes,omitempty"`
-	// The ID of the user pool where you want to create a resource server.
+	// Regex Pattern: `^[\w+]+$`
+	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Value is immutable once set"
+	UserPoolClientID  *string                                  `json:"userPoolClientId,omitempty"`
+	UserPoolClientRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"userPoolClientRef,omitempty"`
+	// The ID of the user pool that contains the app client.
 	//
 	// Regex Pattern: `^[\w-]+_[0-9a-zA-Z]+$`
 	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Value is immutable once set"
-	UserPoolID  *string                                  `json:"userPoolID,omitempty"`
+	UserPoolID  *string                                  `json:"userPoolId,omitempty"`
 	UserPoolRef *ackv1alpha1.AWSResourceReferenceWrapper `json:"userPoolRef,omitempty"`
 }
 
-// ResourceServerStatus defines the observed state of ResourceServer
-type ResourceServerStatus struct {
+// UserPoolClientSecretStatus defines the observed state of UserPoolClientSecret
+type UserPoolClientSecretStatus struct {
 	// All CRs managed by ACK have a common `Status.ACKResourceMetadata` member
 	// that is used to contain resource sync state, account ownership,
 	// constructed ARN for the resource
@@ -64,26 +58,33 @@ type ResourceServerStatus struct {
 	// resource
 	// +kubebuilder:validation:Optional
 	Conditions []*ackv1alpha1.Condition `json:"conditions"`
+	// The date and time when the client secret was created.
+	// +kubebuilder:validation:Optional
+	ClientSecretCreateDate *metav1.Time `json:"clientSecretCreateDate,omitempty"`
+	// The unique identifier for the client secret. This identifier follows the
+	// format --.
+	// +kubebuilder:validation:Optional
+	ID *string `json:"id,omitempty"`
 }
 
-// ResourceServer is the Schema for the ResourceServers API
+// UserPoolClientSecret is the Schema for the UserPoolClientSecrets API
 // +kubebuilder:object:root=true
 // +kubebuilder:subresource:status
-type ResourceServer struct {
+type UserPoolClientSecret struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
-	Spec              ResourceServerSpec   `json:"spec,omitempty"`
-	Status            ResourceServerStatus `json:"status,omitempty"`
+	Spec              UserPoolClientSecretSpec   `json:"spec,omitempty"`
+	Status            UserPoolClientSecretStatus `json:"status,omitempty"`
 }
 
-// ResourceServerList contains a list of ResourceServer
+// UserPoolClientSecretList contains a list of UserPoolClientSecret
 // +kubebuilder:object:root=true
-type ResourceServerList struct {
+type UserPoolClientSecretList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
-	Items           []ResourceServer `json:"items"`
+	Items           []UserPoolClientSecret `json:"items"`
 }
 
 func init() {
-	SchemeBuilder.Register(&ResourceServer{}, &ResourceServerList{})
+	SchemeBuilder.Register(&UserPoolClientSecret{}, &UserPoolClientSecretList{})
 }

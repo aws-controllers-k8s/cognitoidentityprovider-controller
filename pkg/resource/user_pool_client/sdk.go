@@ -215,6 +215,19 @@ func (rm *resourceManager) sdkFind(
 	} else {
 		ko.Spec.ReadAttributes = nil
 	}
+	if resp.UserPoolClient.RefreshTokenRotation != nil {
+		f19 := &svcapitypes.RefreshTokenRotationType{}
+		if resp.UserPoolClient.RefreshTokenRotation.Feature != "" {
+			f19.Feature = aws.String(string(resp.UserPoolClient.RefreshTokenRotation.Feature))
+		}
+		if resp.UserPoolClient.RefreshTokenRotation.RetryGracePeriodSeconds != nil {
+			retryGracePeriodSecondsCopy := int64(*resp.UserPoolClient.RefreshTokenRotation.RetryGracePeriodSeconds)
+			f19.RetryGracePeriodSeconds = &retryGracePeriodSecondsCopy
+		}
+		ko.Spec.RefreshTokenRotation = f19
+	} else {
+		ko.Spec.RefreshTokenRotation = nil
+	}
 	refreshTokenValidityCopy := int64(resp.UserPoolClient.RefreshTokenValidity)
 	ko.Spec.RefreshTokenValidity = &refreshTokenValidityCopy
 	if resp.UserPoolClient.SupportedIdentityProviders != nil {
@@ -223,17 +236,17 @@ func (rm *resourceManager) sdkFind(
 		ko.Spec.SupportedIdentityProviders = nil
 	}
 	if resp.UserPoolClient.TokenValidityUnits != nil {
-		f21 := &svcapitypes.TokenValidityUnitsType{}
+		f22 := &svcapitypes.TokenValidityUnitsType{}
 		if resp.UserPoolClient.TokenValidityUnits.AccessToken != "" {
-			f21.AccessToken = aws.String(string(resp.UserPoolClient.TokenValidityUnits.AccessToken))
+			f22.AccessToken = aws.String(string(resp.UserPoolClient.TokenValidityUnits.AccessToken))
 		}
 		if resp.UserPoolClient.TokenValidityUnits.IdToken != "" {
-			f21.IDToken = aws.String(string(resp.UserPoolClient.TokenValidityUnits.IdToken))
+			f22.IDToken = aws.String(string(resp.UserPoolClient.TokenValidityUnits.IdToken))
 		}
 		if resp.UserPoolClient.TokenValidityUnits.RefreshToken != "" {
-			f21.RefreshToken = aws.String(string(resp.UserPoolClient.TokenValidityUnits.RefreshToken))
+			f22.RefreshToken = aws.String(string(resp.UserPoolClient.TokenValidityUnits.RefreshToken))
 		}
-		ko.Spec.TokenValidityUnits = f21
+		ko.Spec.TokenValidityUnits = f22
 	} else {
 		ko.Spec.TokenValidityUnits = nil
 	}
@@ -431,6 +444,19 @@ func (rm *resourceManager) sdkCreate(
 	} else {
 		ko.Spec.ReadAttributes = nil
 	}
+	if resp.UserPoolClient.RefreshTokenRotation != nil {
+		f19 := &svcapitypes.RefreshTokenRotationType{}
+		if resp.UserPoolClient.RefreshTokenRotation.Feature != "" {
+			f19.Feature = aws.String(string(resp.UserPoolClient.RefreshTokenRotation.Feature))
+		}
+		if resp.UserPoolClient.RefreshTokenRotation.RetryGracePeriodSeconds != nil {
+			retryGracePeriodSecondsCopy := int64(*resp.UserPoolClient.RefreshTokenRotation.RetryGracePeriodSeconds)
+			f19.RetryGracePeriodSeconds = &retryGracePeriodSecondsCopy
+		}
+		ko.Spec.RefreshTokenRotation = f19
+	} else {
+		ko.Spec.RefreshTokenRotation = nil
+	}
 	refreshTokenValidityCopy := int64(resp.UserPoolClient.RefreshTokenValidity)
 	ko.Spec.RefreshTokenValidity = &refreshTokenValidityCopy
 	if resp.UserPoolClient.SupportedIdentityProviders != nil {
@@ -439,17 +465,17 @@ func (rm *resourceManager) sdkCreate(
 		ko.Spec.SupportedIdentityProviders = nil
 	}
 	if resp.UserPoolClient.TokenValidityUnits != nil {
-		f21 := &svcapitypes.TokenValidityUnitsType{}
+		f22 := &svcapitypes.TokenValidityUnitsType{}
 		if resp.UserPoolClient.TokenValidityUnits.AccessToken != "" {
-			f21.AccessToken = aws.String(string(resp.UserPoolClient.TokenValidityUnits.AccessToken))
+			f22.AccessToken = aws.String(string(resp.UserPoolClient.TokenValidityUnits.AccessToken))
 		}
 		if resp.UserPoolClient.TokenValidityUnits.IdToken != "" {
-			f21.IDToken = aws.String(string(resp.UserPoolClient.TokenValidityUnits.IdToken))
+			f22.IDToken = aws.String(string(resp.UserPoolClient.TokenValidityUnits.IdToken))
 		}
 		if resp.UserPoolClient.TokenValidityUnits.RefreshToken != "" {
-			f21.RefreshToken = aws.String(string(resp.UserPoolClient.TokenValidityUnits.RefreshToken))
+			f22.RefreshToken = aws.String(string(resp.UserPoolClient.TokenValidityUnits.RefreshToken))
 		}
-		ko.Spec.TokenValidityUnits = f21
+		ko.Spec.TokenValidityUnits = f22
 	} else {
 		ko.Spec.TokenValidityUnits = nil
 	}
@@ -570,6 +596,21 @@ func (rm *resourceManager) newCreateRequestPayload(
 	if r.ko.Spec.ReadAttributes != nil {
 		res.ReadAttributes = aws.ToStringSlice(r.ko.Spec.ReadAttributes)
 	}
+	if r.ko.Spec.RefreshTokenRotation != nil {
+		f17 := &svcsdktypes.RefreshTokenRotationType{}
+		if r.ko.Spec.RefreshTokenRotation.Feature != nil {
+			f17.Feature = svcsdktypes.FeatureType(*r.ko.Spec.RefreshTokenRotation.Feature)
+		}
+		if r.ko.Spec.RefreshTokenRotation.RetryGracePeriodSeconds != nil {
+			retryGracePeriodSecondsCopy0 := *r.ko.Spec.RefreshTokenRotation.RetryGracePeriodSeconds
+			if retryGracePeriodSecondsCopy0 > math.MaxInt32 || retryGracePeriodSecondsCopy0 < math.MinInt32 {
+				return nil, fmt.Errorf("error: field RetryGracePeriodSeconds is of type int32")
+			}
+			retryGracePeriodSecondsCopy := int32(retryGracePeriodSecondsCopy0)
+			f17.RetryGracePeriodSeconds = &retryGracePeriodSecondsCopy
+		}
+		res.RefreshTokenRotation = f17
+	}
 	if r.ko.Spec.RefreshTokenValidity != nil {
 		refreshTokenValidityCopy0 := *r.ko.Spec.RefreshTokenValidity
 		if refreshTokenValidityCopy0 > math.MaxInt32 || refreshTokenValidityCopy0 < math.MinInt32 {
@@ -582,17 +623,17 @@ func (rm *resourceManager) newCreateRequestPayload(
 		res.SupportedIdentityProviders = aws.ToStringSlice(r.ko.Spec.SupportedIdentityProviders)
 	}
 	if r.ko.Spec.TokenValidityUnits != nil {
-		f19 := &svcsdktypes.TokenValidityUnitsType{}
+		f20 := &svcsdktypes.TokenValidityUnitsType{}
 		if r.ko.Spec.TokenValidityUnits.AccessToken != nil {
-			f19.AccessToken = svcsdktypes.TimeUnitsType(*r.ko.Spec.TokenValidityUnits.AccessToken)
+			f20.AccessToken = svcsdktypes.TimeUnitsType(*r.ko.Spec.TokenValidityUnits.AccessToken)
 		}
 		if r.ko.Spec.TokenValidityUnits.IDToken != nil {
-			f19.IdToken = svcsdktypes.TimeUnitsType(*r.ko.Spec.TokenValidityUnits.IDToken)
+			f20.IdToken = svcsdktypes.TimeUnitsType(*r.ko.Spec.TokenValidityUnits.IDToken)
 		}
 		if r.ko.Spec.TokenValidityUnits.RefreshToken != nil {
-			f19.RefreshToken = svcsdktypes.TimeUnitsType(*r.ko.Spec.TokenValidityUnits.RefreshToken)
+			f20.RefreshToken = svcsdktypes.TimeUnitsType(*r.ko.Spec.TokenValidityUnits.RefreshToken)
 		}
-		res.TokenValidityUnits = f19
+		res.TokenValidityUnits = f20
 	}
 	if r.ko.Spec.UserPoolID != nil {
 		res.UserPoolId = r.ko.Spec.UserPoolID
@@ -757,6 +798,19 @@ func (rm *resourceManager) sdkUpdate(
 	} else {
 		ko.Spec.ReadAttributes = nil
 	}
+	if resp.UserPoolClient.RefreshTokenRotation != nil {
+		f19 := &svcapitypes.RefreshTokenRotationType{}
+		if resp.UserPoolClient.RefreshTokenRotation.Feature != "" {
+			f19.Feature = aws.String(string(resp.UserPoolClient.RefreshTokenRotation.Feature))
+		}
+		if resp.UserPoolClient.RefreshTokenRotation.RetryGracePeriodSeconds != nil {
+			retryGracePeriodSecondsCopy := int64(*resp.UserPoolClient.RefreshTokenRotation.RetryGracePeriodSeconds)
+			f19.RetryGracePeriodSeconds = &retryGracePeriodSecondsCopy
+		}
+		ko.Spec.RefreshTokenRotation = f19
+	} else {
+		ko.Spec.RefreshTokenRotation = nil
+	}
 	refreshTokenValidityCopy := int64(resp.UserPoolClient.RefreshTokenValidity)
 	ko.Spec.RefreshTokenValidity = &refreshTokenValidityCopy
 	if resp.UserPoolClient.SupportedIdentityProviders != nil {
@@ -765,17 +819,17 @@ func (rm *resourceManager) sdkUpdate(
 		ko.Spec.SupportedIdentityProviders = nil
 	}
 	if resp.UserPoolClient.TokenValidityUnits != nil {
-		f21 := &svcapitypes.TokenValidityUnitsType{}
+		f22 := &svcapitypes.TokenValidityUnitsType{}
 		if resp.UserPoolClient.TokenValidityUnits.AccessToken != "" {
-			f21.AccessToken = aws.String(string(resp.UserPoolClient.TokenValidityUnits.AccessToken))
+			f22.AccessToken = aws.String(string(resp.UserPoolClient.TokenValidityUnits.AccessToken))
 		}
 		if resp.UserPoolClient.TokenValidityUnits.IdToken != "" {
-			f21.IDToken = aws.String(string(resp.UserPoolClient.TokenValidityUnits.IdToken))
+			f22.IDToken = aws.String(string(resp.UserPoolClient.TokenValidityUnits.IdToken))
 		}
 		if resp.UserPoolClient.TokenValidityUnits.RefreshToken != "" {
-			f21.RefreshToken = aws.String(string(resp.UserPoolClient.TokenValidityUnits.RefreshToken))
+			f22.RefreshToken = aws.String(string(resp.UserPoolClient.TokenValidityUnits.RefreshToken))
 		}
-		ko.Spec.TokenValidityUnits = f21
+		ko.Spec.TokenValidityUnits = f22
 	} else {
 		ko.Spec.TokenValidityUnits = nil
 	}
@@ -897,6 +951,21 @@ func (rm *resourceManager) newUpdateRequestPayload(
 	if r.ko.Spec.ReadAttributes != nil {
 		res.ReadAttributes = aws.ToStringSlice(r.ko.Spec.ReadAttributes)
 	}
+	if r.ko.Spec.RefreshTokenRotation != nil {
+		f17 := &svcsdktypes.RefreshTokenRotationType{}
+		if r.ko.Spec.RefreshTokenRotation.Feature != nil {
+			f17.Feature = svcsdktypes.FeatureType(*r.ko.Spec.RefreshTokenRotation.Feature)
+		}
+		if r.ko.Spec.RefreshTokenRotation.RetryGracePeriodSeconds != nil {
+			retryGracePeriodSecondsCopy0 := *r.ko.Spec.RefreshTokenRotation.RetryGracePeriodSeconds
+			if retryGracePeriodSecondsCopy0 > math.MaxInt32 || retryGracePeriodSecondsCopy0 < math.MinInt32 {
+				return nil, fmt.Errorf("error: field RetryGracePeriodSeconds is of type int32")
+			}
+			retryGracePeriodSecondsCopy := int32(retryGracePeriodSecondsCopy0)
+			f17.RetryGracePeriodSeconds = &retryGracePeriodSecondsCopy
+		}
+		res.RefreshTokenRotation = f17
+	}
 	if r.ko.Spec.RefreshTokenValidity != nil {
 		refreshTokenValidityCopy0 := *r.ko.Spec.RefreshTokenValidity
 		if refreshTokenValidityCopy0 > math.MaxInt32 || refreshTokenValidityCopy0 < math.MinInt32 {
@@ -909,17 +978,17 @@ func (rm *resourceManager) newUpdateRequestPayload(
 		res.SupportedIdentityProviders = aws.ToStringSlice(r.ko.Spec.SupportedIdentityProviders)
 	}
 	if r.ko.Spec.TokenValidityUnits != nil {
-		f19 := &svcsdktypes.TokenValidityUnitsType{}
+		f20 := &svcsdktypes.TokenValidityUnitsType{}
 		if r.ko.Spec.TokenValidityUnits.AccessToken != nil {
-			f19.AccessToken = svcsdktypes.TimeUnitsType(*r.ko.Spec.TokenValidityUnits.AccessToken)
+			f20.AccessToken = svcsdktypes.TimeUnitsType(*r.ko.Spec.TokenValidityUnits.AccessToken)
 		}
 		if r.ko.Spec.TokenValidityUnits.IDToken != nil {
-			f19.IdToken = svcsdktypes.TimeUnitsType(*r.ko.Spec.TokenValidityUnits.IDToken)
+			f20.IdToken = svcsdktypes.TimeUnitsType(*r.ko.Spec.TokenValidityUnits.IDToken)
 		}
 		if r.ko.Spec.TokenValidityUnits.RefreshToken != nil {
-			f19.RefreshToken = svcsdktypes.TimeUnitsType(*r.ko.Spec.TokenValidityUnits.RefreshToken)
+			f20.RefreshToken = svcsdktypes.TimeUnitsType(*r.ko.Spec.TokenValidityUnits.RefreshToken)
 		}
-		res.TokenValidityUnits = f19
+		res.TokenValidityUnits = f20
 	}
 	if r.ko.Spec.UserPoolID != nil {
 		res.UserPoolId = r.ko.Spec.UserPoolID

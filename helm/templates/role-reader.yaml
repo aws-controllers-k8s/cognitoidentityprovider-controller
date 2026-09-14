@@ -19,6 +19,7 @@ rules:
   - resourceservers
   - userpools
   - userpoolclients
+  - userpoolclientsecrets
   verbs:
   - get
   - list
