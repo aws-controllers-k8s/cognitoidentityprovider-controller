@@ -41,6 +41,7 @@ func newResourceDelta(
 		delta.Add("", a, b)
 		return delta
 	}
+	customPreCompare(delta, a, b)
 
 	if ackcompare.HasNilDifference(a.ko.Spec.AccountRecoverySetting, b.ko.Spec.AccountRecoverySetting) {
 		delta.Add("Spec.AccountRecoverySetting", a.ko.Spec.AccountRecoverySetting, b.ko.Spec.AccountRecoverySetting)
@@ -458,13 +459,6 @@ func newResourceDelta(
 			if *a.ko.Spec.UserPoolAddOns.AdvancedSecurityMode != *b.ko.Spec.UserPoolAddOns.AdvancedSecurityMode {
 				delta.Add("Spec.UserPoolAddOns.AdvancedSecurityMode", a.ko.Spec.UserPoolAddOns.AdvancedSecurityMode, b.ko.Spec.UserPoolAddOns.AdvancedSecurityMode)
 			}
-		}
-	}
-	if len(a.ko.Spec.UserPoolTags) != len(b.ko.Spec.UserPoolTags) {
-		delta.Add("Spec.UserPoolTags", a.ko.Spec.UserPoolTags, b.ko.Spec.UserPoolTags)
-	} else if len(a.ko.Spec.UserPoolTags) > 0 {
-		if !ackcompare.MapStringStringPEqual(a.ko.Spec.UserPoolTags, b.ko.Spec.UserPoolTags) {
-			delta.Add("Spec.UserPoolTags", a.ko.Spec.UserPoolTags, b.ko.Spec.UserPoolTags)
 		}
 	}
 	if len(a.ko.Spec.UsernameAttributes) != len(b.ko.Spec.UsernameAttributes) {

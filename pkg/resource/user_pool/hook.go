@@ -2,10 +2,51 @@ package user_pool
 
 import (
 	"context"
+	"strings"
 
+	ackcompare "github.com/aws-controllers-k8s/runtime/pkg/compare"
 	ackrtlog "github.com/aws-controllers-k8s/runtime/pkg/runtime/log"
 	svcsdk "github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider"
 )
+
+// systemTagKeyPrefixes are the key prefixes of tags injected by the ACK runtime
+// or by AWS, which a user's Spec never carries.
+var systemTagKeyPrefixes = []string{"services.k8s.aws/", "aws:"}
+
+// customPreCompare compares Spec.UserPoolTags ignoring system-injected keys,
+// which DescribeUserPool returns but only Spec.Tags is wired to manage.
+func customPreCompare(delta *ackcompare.Delta, a, b *resource) {
+	if a == nil || a.ko == nil || b == nil || b.ko == nil {
+		return
+	}
+	desired := withoutSystemTags(a.ko.Spec.UserPoolTags)
+	latest := withoutSystemTags(b.ko.Spec.UserPoolTags)
+	if !ackcompare.MapStringStringPEqual(desired, latest) {
+		delta.Add("Spec.UserPoolTags", a.ko.Spec.UserPoolTags, b.ko.Spec.UserPoolTags)
+	}
+}
+
+// withoutSystemTags copies tags minus system-injected keys; the supplied map is
+// never modified because a and b are the base of the runtime's merge patch.
+func withoutSystemTags(tags map[string]*string) map[string]*string {
+	filtered := make(map[string]*string, len(tags))
+	for k, v := range tags {
+		if isSystemTagKey(k) {
+			continue
+		}
+		filtered[k] = v
+	}
+	return filtered
+}
+
+func isSystemTagKey(key string) bool {
+	for _, prefix := range systemTagKeyPrefixes {
+		if strings.HasPrefix(key, prefix) {
+			return true
+		}
+	}
+	return false
+}
 
 // syncTags examines the Tags in the supplied Resource and calls the
 // TagResource and UntagResource APIs to ensure that the set of
