@@ -153,6 +153,7 @@ reconcile:
     - ResourceServer
     - UserPool
     - UserPoolClient
+    - UserPoolClientSecret
 
 serviceAccount:
   # Specifies whether a service account should be created
