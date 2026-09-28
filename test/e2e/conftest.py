@@ -14,7 +14,7 @@
 import boto3
 import pytest
 
-from acktest import k8s
+from acktest.k8s import resource as k8s
 
 def pytest_addoption(parser):
     parser.addoption("--runslow", action="store_true", default=False, help="run slow tests")

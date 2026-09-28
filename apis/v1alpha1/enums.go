@@ -89,10 +89,11 @@ const (
 type AuthFactorType string
 
 const (
-	AuthFactorType_EMAIL_OTP AuthFactorType = "EMAIL_OTP"
-	AuthFactorType_PASSWORD  AuthFactorType = "PASSWORD"
-	AuthFactorType_SMS_OTP   AuthFactorType = "SMS_OTP"
-	AuthFactorType_WEB_AUTHN AuthFactorType = "WEB_AUTHN"
+	AuthFactorType_EMAIL_OTP      AuthFactorType = "EMAIL_OTP"
+	AuthFactorType_PASSWORD       AuthFactorType = "PASSWORD"
+	AuthFactorType_SMS_OTP        AuthFactorType = "SMS_OTP"
+	AuthFactorType_SOFTWARE_TOKEN AuthFactorType = "SOFTWARE_TOKEN"
+	AuthFactorType_WEB_AUTHN      AuthFactorType = "WEB_AUTHN"
 )
 
 type AuthFlowType string
@@ -215,6 +216,13 @@ const (
 	EmailSendingAccountType_DEVELOPER       EmailSendingAccountType = "DEVELOPER"
 )
 
+type EncryptionKeyType string
+
+const (
+	EncryptionKeyType_AWS_OWNED_KEY        EncryptionKeyType = "AWS_OWNED_KEY"
+	EncryptionKeyType_CUSTOMER_MANAGED_KEY EncryptionKeyType = "CUSTOMER_MANAGED_KEY"
+)
+
 type EventFilterType string
 
 const (
@@ -262,6 +270,13 @@ const (
 	ExplicitAuthFlowsType_USER_PASSWORD_AUTH             ExplicitAuthFlowsType = "USER_PASSWORD_AUTH"
 )
 
+type FeatureType string
+
+const (
+	FeatureType_DISABLED FeatureType = "DISABLED"
+	FeatureType_ENABLED  FeatureType = "ENABLED"
+)
+
 type FeedbackValueType string
 
 const (
@@ -278,6 +293,25 @@ const (
 	IdentityProviderTypeType_OIDC            IdentityProviderTypeType = "OIDC"
 	IdentityProviderTypeType_SAML            IdentityProviderTypeType = "SAML"
 	IdentityProviderTypeType_SignInWithApple IdentityProviderTypeType = "SignInWithApple"
+)
+
+type InboundFederationLambdaVersionType string
+
+const (
+	InboundFederationLambdaVersionType_V1_0 InboundFederationLambdaVersionType = "V1_0"
+)
+
+type IssuerType string
+
+const (
+	IssuerType_ORIGINAL IssuerType = "ORIGINAL"
+	IssuerType_UPDATED  IssuerType = "UPDATED"
+)
+
+type LimitClass string
+
+const (
+	LimitClass_API_CATEGORY LimitClass = "API_CATEGORY"
 )
 
 type LogLevel string
@@ -302,11 +336,21 @@ const (
 	OAuthFlowType_implicit           OAuthFlowType = "implicit"
 )
 
+type PasswordHashingAlgorithmType string
+
+const (
+	PasswordHashingAlgorithmType_ARGON2ID      PasswordHashingAlgorithmType = "ARGON2ID"
+	PasswordHashingAlgorithmType_BCRYPT        PasswordHashingAlgorithmType = "BCRYPT"
+	PasswordHashingAlgorithmType_PBKDF2_SHA256 PasswordHashingAlgorithmType = "PBKDF2_SHA256"
+	PasswordHashingAlgorithmType_SCRYPT        PasswordHashingAlgorithmType = "SCRYPT"
+)
+
 type PreTokenGenerationLambdaVersionType string
 
 const (
 	PreTokenGenerationLambdaVersionType_V1_0 PreTokenGenerationLambdaVersionType = "V1_0"
 	PreTokenGenerationLambdaVersionType_V2_0 PreTokenGenerationLambdaVersionType = "V2_0"
+	PreTokenGenerationLambdaVersionType_V3_0 PreTokenGenerationLambdaVersionType = "V3_0"
 )
 
 type PreventUserExistenceErrorTypes string
@@ -322,6 +366,22 @@ const (
 	RecoveryOptionNameType_admin_only            RecoveryOptionNameType = "admin_only"
 	RecoveryOptionNameType_verified_email        RecoveryOptionNameType = "verified_email"
 	RecoveryOptionNameType_verified_phone_number RecoveryOptionNameType = "verified_phone_number"
+)
+
+type ReplicaRoleType string
+
+const (
+	ReplicaRoleType_PRIMARY   ReplicaRoleType = "PRIMARY"
+	ReplicaRoleType_SECONDARY ReplicaRoleType = "SECONDARY"
+)
+
+type ReplicaStatusType string
+
+const (
+	ReplicaStatusType_ACTIVE   ReplicaStatusType = "ACTIVE"
+	ReplicaStatusType_CREATING ReplicaStatusType = "CREATING"
+	ReplicaStatusType_DELETING ReplicaStatusType = "DELETING"
+	ReplicaStatusType_INACTIVE ReplicaStatusType = "INACTIVE"
 )
 
 type RiskDecisionType string
@@ -340,11 +400,31 @@ const (
 	RiskLevelType_Medium RiskLevelType = "Medium"
 )
 
+type SecurityPolicyType string
+
+const (
+	SecurityPolicyType_TLS_V1        SecurityPolicyType = "TLS_V1"
+	SecurityPolicyType_TLS_V1_2_2021 SecurityPolicyType = "TLS_V1_2_2021"
+	SecurityPolicyType_TLS_V1_3_2025 SecurityPolicyType = "TLS_V1_3_2025"
+)
+
 type StatusType string
 
 const (
 	StatusType_Disabled StatusType = "Disabled"
 	StatusType_Enabled  StatusType = "Enabled"
+)
+
+type TermsEnforcementType string
+
+const (
+	TermsEnforcementType_NONE TermsEnforcementType = "NONE"
+)
+
+type TermsSourceType string
+
+const (
+	TermsSourceType_LINK TermsSourceType = "LINK"
 )
 
 type TimeUnitsType string
@@ -354,6 +434,13 @@ const (
 	TimeUnitsType_hours   TimeUnitsType = "hours"
 	TimeUnitsType_minutes TimeUnitsType = "minutes"
 	TimeUnitsType_seconds TimeUnitsType = "seconds"
+)
+
+type UpdateReplicaStatusType string
+
+const (
+	UpdateReplicaStatusType_ACTIVE   UpdateReplicaStatusType = "ACTIVE"
+	UpdateReplicaStatusType_INACTIVE UpdateReplicaStatusType = "INACTIVE"
 )
 
 type UserImportJobStatusType string
@@ -424,4 +511,11 @@ type VerifySoftwareTokenResponseType string
 const (
 	VerifySoftwareTokenResponseType_ERROR   VerifySoftwareTokenResponseType = "ERROR"
 	VerifySoftwareTokenResponseType_SUCCESS VerifySoftwareTokenResponseType = "SUCCESS"
+)
+
+type WebAuthnFactorConfigurationType string
+
+const (
+	WebAuthnFactorConfigurationType_MULTI_FACTOR_WITH_USER_VERIFICATION WebAuthnFactorConfigurationType = "MULTI_FACTOR_WITH_USER_VERIFICATION"
+	WebAuthnFactorConfigurationType_SINGLE_FACTOR                       WebAuthnFactorConfigurationType = "SINGLE_FACTOR"
 )

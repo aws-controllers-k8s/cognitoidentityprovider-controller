@@ -60,16 +60,15 @@ spec:
                   Regex Pattern: `^[\w\s+=,.@-]+$`
                 type: string
               scopes:
-                description: A list of scopes. Each scope is a key-value map with
-                  the keys name and description.
+                description: |-
+                  A list of custom scopes. Each scope is a key-value map with the keys ScopeName
+                  and ScopeDescription. The name of a custom scope is a combination of ScopeName
+                  and the resource server Name in this request, for example MyResourceServerName/MyScopeName.
                 items:
                   description: |-
                     One custom scope associated with a user pool resource server. This data type
                     is a member of ResourceServerScopeType. For more information, see Scopes,
                     M2M, and API authorization with resource servers (https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-define-resource-servers.html).
-
-                    This data type is a request parameter of CreateResourceServer (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_CreateResourceServer.html)
-                    and a response parameter of DescribeResourceServer (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeResourceServer.html).
                   properties:
                     scopeDescription:
                       type: string
@@ -79,7 +78,7 @@ spec:
                 type: array
               userPoolID:
                 description: |-
-                  The user pool ID for the user pool.
+                  The ID of the user pool where you want to create a resource server.
 
                   Regex Pattern: `^[\w-]+_[0-9a-zA-Z]+$`
                 type: string

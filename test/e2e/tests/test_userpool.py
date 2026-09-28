@@ -11,8 +11,7 @@
 # express or implied. See the License for the specific language governing
 # permissions and limitations under the License.
 
-"""Integration tests for the ELB TargetGroups.
-"""
+"""Integration tests for the Cognito UserPool resource."""
 
 import logging
 import time
@@ -20,11 +19,10 @@ import time
 import pytest
 from acktest.k8s import resource as k8s
 from acktest.resources import random_suffix_name
-from e2e import CRD_GROUP, CRD_VERSION, load_cognitoidentityprovider_resource, service_marker
-from e2e.bootstrap_resources import get_bootstrap_resources
+from e2e import load_cognitoidentityprovider_resource, service_marker
 from e2e.replacement_values import REPLACEMENT_VALUES
 
-from e2e.tests.helper import CognitoValidator
+from e2e.tests.helper import CognitoValidator, create_and_assert_resource, delete_and_assert_gone
 
 RESOURCE_PLURAL = 'userpools'
 
@@ -44,28 +42,14 @@ def simple_userpool(cognitoidentityprovider_client):
     )
     logging.debug(resource_data)
 
-    # Create k8s resource
-    ref = k8s.CustomResourceReference(
-        CRD_GROUP, CRD_VERSION, RESOURCE_PLURAL,
-        userpool_name, namespace="default")
-    k8s.create_custom_resource(ref, resource_data)
-
-    time.sleep(CREATE_WAIT_AFTER_SECONDS)
-    cr = k8s.wait_resource_consumed_by_controller(ref)
-
-    assert cr is not None
-    assert k8s.get_resource_exists(ref)
+    ref, cr = create_and_assert_resource(
+        RESOURCE_PLURAL, userpool_name, resource_data,
+        wait_seconds=CREATE_WAIT_AFTER_SECONDS,
+    )
 
     yield (ref, cr)
 
-    # Delete k8s resource
-    if k8s.get_resource_exists(ref):
-        _, deleted = k8s.delete_custom_resource(
-            ref,
-            DELETE_WAIT_AFTER_SECONDS,
-        )
-        assert deleted
-    assert not k8s.get_resource_exists(ref)
+    delete_and_assert_gone(ref, wait_seconds=DELETE_WAIT_AFTER_SECONDS)
 
 @service_marker
 @pytest.mark.canary
