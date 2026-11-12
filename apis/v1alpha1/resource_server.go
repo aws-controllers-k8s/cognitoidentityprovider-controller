@@ -39,9 +39,11 @@ type ResourceServerSpec struct {
 	// Regex Pattern: `^[\w\s+=,.@-]+$`
 	// +kubebuilder:validation:Required
 	Name *string `json:"name"`
-	// A list of scopes. Each scope is a key-value map with the keys name and description.
+	// A list of custom scopes. Each scope is a key-value map with the keys ScopeName
+	// and ScopeDescription. The name of a custom scope is a combination of ScopeName
+	// and the resource server Name in this request, for example MyResourceServerName/MyScopeName.
 	Scopes []*ResourceServerScopeType `json:"scopes,omitempty"`
-	// The user pool ID for the user pool.
+	// The ID of the user pool where you want to create a resource server.
 	//
 	// Regex Pattern: `^[\w-]+_[0-9a-zA-Z]+$`
 	// +kubebuilder:validation:XValidation:rule="self == oldSelf",message="Value is immutable once set"
